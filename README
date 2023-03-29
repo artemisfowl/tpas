@@ -9,3 +9,16 @@ Enhancement features:
 
 Coding Style:
   - Always use snake_case as opposed to camelCase.
+  - Imports need not be in alphabetical order, just follow the order as follows:
+    - standard API imports (Eg, sys, os)
+    - third-party imports (Eg, fastapi, flask, wx)
+    - custom module imports 
+
+Documentation:
+  - All the files, whether directly under tpas or submodules need to have the following structure to documentation strings.
+
+  """
+    @brief A brief description of the file contents
+    @author name of the author
+    @date a date in dd/mm/yyyy format
+  """
