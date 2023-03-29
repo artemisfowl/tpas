@@ -21,4 +21,5 @@ Documentation:
     @brief A brief description of the file contents
     @author name of the author
   """
-   - At times, @note can be added in the documentation in order for updating the programmer about certain specifics of a file.
+
+  - At times, @note can be added in the documentation in order for updating the programmer about certain specifics of a file.
