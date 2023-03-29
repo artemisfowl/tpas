@@ -1,0 +1,11 @@
+Aim:
+  Aim is to create a software capable of running various types of tests using REST API interface.
+
+Todo:
+  - Add the capacity to start a basic service in order to check the status of the services.
+
+Enhancement features:
+ - Allow for LunarVim or VScode for easy integration into the software.
+
+Coding Style:
+  - Always use snake_case as opposed to camelCase.
