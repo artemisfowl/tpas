@@ -7,12 +7,14 @@ Todo:
 Enhancement features:
  - Allow for LunarVim or VScode for easy integration into the software.
 
-Coding Style:
+Coding and Commenting Style:
   - Always use snake_case as opposed to camelCase.
   - Imports need not be in alphabetical order, just follow the order as follows:
     - standard API imports (Eg, sys, os)
     - third-party imports (Eg, fastapi, flask, wx)
     - custom module imports 
+  - Add the information about something to be written using "# fixme: ..." and "# testme: ..." in case something needs to be tested.
+    Always provide one space after the ":" in fixme or testme.
 
 Documentation:
   - All the files, whether directly under tpas or submodules need to have the following structure to documentation strings.
