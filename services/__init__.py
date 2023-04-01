@@ -1,6 +1,6 @@
 """
     @brief Default initialization file for Services module.
-    @author sb
+    @author oldgod
 """
 
 from route import app

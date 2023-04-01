@@ -1,12 +1,16 @@
 """
     @brief Utility module component containing all the functions for cli based options
-    @author sb
+    @author oldgod
 """
 
 # standard module imports
 from argparse import ArgumentParser
 
 def parse_cli_args() -> dict:
+    '''
+        @brief function to parse the CLI arguments and return the parsed options
+        @author oldgod
+    '''
     args = {}
     parser = ArgumentParser()
 
