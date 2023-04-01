@@ -15,5 +15,3 @@ def run_service():
 if __name__ == "__main__":
     args = parse_cli_args()
     print(f"CLI Arguments provided : {args}")
-    run_service()
-
