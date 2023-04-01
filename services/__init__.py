@@ -3,4 +3,4 @@
     @author oldgod
 """
 
-from route import app
+from .route import app
