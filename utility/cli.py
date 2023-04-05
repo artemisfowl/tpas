@@ -1,7 +1,7 @@
-"""
+'''
     @brief Utility module component containing all the functions for cli based options
     @author oldgod
-"""
+'''
 
 # standard module imports
 from argparse import ArgumentParser
@@ -12,12 +12,14 @@ def parse_cli_args() -> dict:
         @author oldgod
     '''
     args = {}
-    parser = ArgumentParser()
+    parser = ArgumentParser(description="Program to run Testing Platform As Service(TPAS)")
 
-    # fixme: add the code for optional arguments here
+    # optional arguments
 
     # required arguments
-    parser.add_argument("-m", "--module", help="Specify the submodule [services]", required=True)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-m", "--module", help="Specify the submodule [services]", required=False, action="store", nargs=1)
+    group.add_argument("-l", "--list", help="Show the list of available modules", required=False, action="store_true")
 
     args = parser.parse_args()
     return vars(args)
