@@ -28,7 +28,7 @@ class Response:
         @brief class containing the response details when API(s) will be hit
         @author oldgod
     '''
-    def __init__(self, code: int, message: str) -> None:
+    def __init__(self, code: int, message: str, ip: str="") -> None:
         '''
             @brief default constructor for Response class
             @param code : integer containing the ResponseCode
@@ -36,6 +36,7 @@ class Response:
         '''
         self._code = ResponseCode.SUCCESS if code is None else code
         self._message = ResponseMessage.DEFAULT if message is None else message
+        self._ip = ip
 
     def update(self, code: int=0, message: str=ResponseMessage.DEFAULT):
         if self._code != code:

@@ -5,7 +5,8 @@ from uvicorn import run as uvrun
 # custom module
 from utility import parse_cli_args, list_submodules
 
-def run_service(host: str, port: int=5000, nworker: int=1):
+# fixme: decide whether this function should be present here or should be moved to utility module
+def run_service(host: str="", port: int=5000, nworker: int=1):
     '''
         @brief function to start the API servces
         @author oldgod
@@ -16,6 +17,8 @@ if __name__ == "__main__":
     args = parse_cli_args()
     print(args)
 
+    # fixme: set up the logging facility.
+
     if args.get("list"):
         print("Modules available")
         count = 1
@@ -23,4 +26,4 @@ if __name__ == "__main__":
             print(f"{count}. {module}")
             count += 1
     elif args.get("module"):
-        run_service(host="")
+        run_service()

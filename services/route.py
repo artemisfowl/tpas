@@ -3,7 +3,7 @@
     @author oldgod
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 from .model import Response, ResponseCode
 
@@ -18,9 +18,9 @@ async def get_root():
     return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS")
 
 @app.get("/status")
-async def get_service_status():
+async def get_service_status(request: Request):
     '''
         @brief async response function returning the status of the API(s) running
         @author oldgod
     '''
-    return Response(code=ResponseCode.SUCCESS, message="Working")
+    return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0])
