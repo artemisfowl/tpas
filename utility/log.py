@@ -40,5 +40,14 @@ class Scribe:
         else:
             self._logger.setLevel(INFO)
 
+    def set_log_file(self, log_file_path: str):
+        if not isinstance(log_file_path, str) or len(log_file_path) == 0:
+            return # fixme: this should not return the control, rather should be raising a custom Exception.
+        # fixme: add the module which will house the custom exceptions
+        # fixme: also think about providing the user with the capacity to perform changes on the fly and see the changes getting reflected
+        self._logdir = log_file_path
+
+        # testme: this function should automatically allow for creating a new file handler temporarily
+
     def set_log_level(self, log_level: int):
         self._logger.setLevel(log_level)
