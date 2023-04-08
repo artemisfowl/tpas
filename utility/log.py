@@ -3,7 +3,7 @@
     @author oldgod
 '''
 
-from logging import getLogger
+from logging import getLogger, Formatter
 
 # fixme: check if it is better to use a class or a simple function should do
 class Scribe:
@@ -13,3 +13,7 @@ class Scribe:
     '''
     def __init__(self) -> None:
         self._logger = getLogger()
+        self._log_format = Formatter("%(asctime)s : <%(threadName)-12.12s>" +
+			"(%(levelname)-5.5s) " +
+			"-: %(filename)s:%(lineno)s - %(funcName)s() :-" +
+			" %(message)s")
