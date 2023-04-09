@@ -23,7 +23,6 @@ def list_submodules(dir: str) -> list:
     if dir is None or not isinstance(dir, str) or len(dir) == 0:
         return modules
 
-    # fixme: find the modules available
     result = glob(f"{dir}**/module")
     for module in result:
         module = module[:module.index("module")-1]
@@ -57,12 +56,12 @@ def run_module(module_name: str, modules: set):
 
         @note please give unique names to the modules, duplicate names can cause issues with the modules loading.
     '''
-    debug("Checking if the module name is a string or is not an empty string")
+    info("Checking if the module name is a string or is not an empty string")
     if not isinstance(module_name, str) or len(module_name) == 0:
         error("Module name value is either not a string or is empty")
         return # fixme: add the code for raising a custom exception
 
-    debug("Checking if the modules is a set or not")
+    info("Checking if the modules is a set or not")
     if not isinstance(modules, set):
         error(f"Modules value is not a set")
         return # fixme: add the code for raising a custom exception
@@ -74,7 +73,6 @@ def run_module(module_name: str, modules: set):
     debug(f"Module name provided : {repr(module_name)}")
 
     match module_name:
-        # q: why is this one not matching at all?
         case "services":
             if module_name in modules:
                 debug("Service module will be started")

@@ -6,6 +6,9 @@ from logging import info, debug, DEBUG
 # custom modules
 from utility import parse_cli_args, modules, chk_pyver, run_module, scribe
 
+# fixme: change the module file to a module.ini file providing users the capacity to change how the module should be started
+# fixme: add the code for creating the log directory at the start of the program
+
 if __name__ == "__main__":
     # enable debug mode for now explicitly
     # fixme: add the configurability to change the logging feature from a configuration file
