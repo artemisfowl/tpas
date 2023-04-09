@@ -62,9 +62,6 @@ def run_module(module_name: str, modules: set):
     if not isinstance(modules, set):
         return # fixme: add the code for raising a custom exception
 
-    # fixme: add a switcher based on the most recent change in Python
-    # fixme: since this switch matching of Python 3.10 will be used, need to add the python version checking code in this program - should be done at the start
-
     for module in modules:
         match module:
             case "services":
