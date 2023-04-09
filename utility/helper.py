@@ -57,19 +57,27 @@ def run_module(module_name: str, modules: set):
 
         @note please give unique names to the modules, duplicate names can cause issues with the modules loading.
     '''
+    debug("Checking if the module name is a string or is not an empty string")
     if not isinstance(module_name, str) or len(module_name) == 0:
+        error("Module name value is either not a string or is empty")
         return # fixme: add the code for raising a custom exception
+
+    debug("Checking if the modules is a set or not")
     if not isinstance(modules, set):
+        error(f"Modules value is not a set")
         return # fixme: add the code for raising a custom exception
 
-    for module in modules:
-        match module:
-            case ["services"]: # note: provide the square braces so that the exact match is done, else it will be a membership check
-                # fixme: add the code for taking in the values of host, port and worker number from the constant file - those would be default
-                # fixme: add the capacity to accommodate changes as per module requirements
-                info("Matching module name for services")
-                debug(f"{module_name}:app")
-                uvrun("services:app", host="0.0.0.0", port=5000, workers=1)
-            case _:
-                error("Unknown module : {} specifed")
+    # remove the brackets from the module name
+    module_name = module_name.strip("]")
+    module_name = module_name.strip("[")
+    module_name = module_name.strip("'")
+    debug(f"Module name provided : {repr(module_name)}")
 
+    match module_name:
+        # q: why is this one not matching at all?
+        case "services":
+            if module_name in modules:
+                debug("Service module will be started")
+                uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1)
+        case _:
+            error(f"Unknown module : {module_name} specifed to be started")
