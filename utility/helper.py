@@ -5,6 +5,9 @@
 
 from glob import glob
 from sys import version_info, exit
+from logging import info, debug, error
+
+from uvicorn import run as uvrun
 
 from .constants import PYVER_MAJOR, PYVER_MINOR
 
@@ -36,7 +39,7 @@ def chk_pyver():
 
         @note If the Python version does not match Python 3.10, the program will be exiting immediately
     '''
-    # fixme: add the values to the constant file
+
     if version_info.major == PYVER_MAJOR:
         if version_info.minor != PYVER_MINOR:
             print(f"Python version to be used with this program : 3.10+, current version is {version_info.major}.{version_info.minor}")
@@ -61,4 +64,13 @@ def run_module(module_name: str, modules: set):
 
     # fixme: add a switcher based on the most recent change in Python
     # fixme: since this switch matching of Python 3.10 will be used, need to add the python version checking code in this program - should be done at the start
+
+    for module in modules:
+        match module:
+            case "services":
+                # fixme: add the code for taking in the values of host, port and worker number from the constant file - those would be default
+                # fixme: add the capacity to accommodate changes as per module requirements
+                uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1)
+            case _:
+                error("Unknown module : {} specifed")
 

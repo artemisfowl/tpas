@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from logging import DEBUG, error, info, debug
+from logging import error, info, debug
 
 from uvicorn import run as uvrun
 
 # custom module
-from utility import parse_cli_args, scribe, modules, chk_pyver
+from utility import parse_cli_args, modules, chk_pyver
 
 # fixme: decide whether this function should be present here or should be moved to utility module
 def run_service(host: str="", port: int=5000, nworker: int=1):
