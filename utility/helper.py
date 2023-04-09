@@ -64,10 +64,12 @@ def run_module(module_name: str, modules: set):
 
     for module in modules:
         match module:
-            case "services":
+            case ["services"]: # note: provide the square braces so that the exact match is done, else it will be a membership check
                 # fixme: add the code for taking in the values of host, port and worker number from the constant file - those would be default
                 # fixme: add the capacity to accommodate changes as per module requirements
-                uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1)
+                info("Matching module name for services")
+                debug(f"{module_name}:app")
+                uvrun("services:app", host="0.0.0.0", port=5000, workers=1)
             case _:
                 error("Unknown module : {} specifed")
 
