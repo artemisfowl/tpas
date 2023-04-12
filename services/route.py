@@ -12,13 +12,13 @@ from .model import Response, ResponseCode
 app = FastAPI()
 
 @app.get("/")
-async def get_root():
+async def get_root(request: Request):
     '''
         @brief async response function default index
         @author oldgod
     '''
     info("Welcome to the root URL of TPAS")
-    return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS")
+    return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS", ip=request.client[0]) # type: ignore
 
 @app.get("/status")
 async def get_service_status(request: Request):

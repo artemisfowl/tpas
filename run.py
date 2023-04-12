@@ -2,6 +2,8 @@
 
 # standard modules
 from logging import info, debug, DEBUG
+from os import makedirs
+makedirs("./logs", exist_ok=True)
 
 # custom modules
 from utility import parse_cli_args, modules, chk_pyver, run_module, scribe
@@ -20,7 +22,6 @@ if __name__ == "__main__":
 
     debug("Checking the required python version")
     chk_pyver()
-
 
     if args.get("list"):
         info("Showing the list of modules")

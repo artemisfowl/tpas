@@ -20,7 +20,7 @@ class Scribe:
 			"-: %(filename)s:%(lineno)s - %(funcName)s() :-" +
 			" %(message)s")
 
-        self._logdir = f"{getcwd()}{sep}{str(datetime.now().date()).replace('-', '_')}_tpas.log" if len(ilogdir) == 0 else ilogdir
+        self._logdir = f"{getcwd()}{sep}logs{sep}{str(datetime.now().date()).replace('-', '_')}_tpas.log" if len(ilogdir) == 0 else ilogdir
 
         # fixme: Add the functionality for checking the logs in a web format so that one can check the logs in a browser
         self._fhandler = FileHandler(self._logdir) # note: this will be responsible for writing to a file
