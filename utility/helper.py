@@ -5,7 +5,7 @@
 
 from glob import glob
 from sys import version_info, exit
-from logging import info, debug, error
+from logging import info, debug, error, root, DEBUG
 
 from uvicorn import run as uvrun
 
@@ -76,6 +76,11 @@ def run_module(module_name: str, modules: set):
         case "services":
             if module_name in modules:
                 debug("Service module will be started")
-                uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1)
+
+                if root.level == DEBUG:
+                    uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1, reload=True)
+                else:
+                    uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1, reload=False)
+
         case _:
             error(f"Unknown module : {module_name} specifed to be started")
