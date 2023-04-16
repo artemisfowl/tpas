@@ -17,6 +17,10 @@ if __name__ == "__main__":
     scribe.set_log_level(DEBUG if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1 else INFO)
     scribe.enable_filelogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablefile")))) # type: ignore
     scribe.enable_streamlogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablestream")))) # type: ignore
+    if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1:
+        debug("Logger has been setup in debug mode")
+    else:
+        info("Logger has been setup in info mode")
     
     info("Parsing the CLI arguments")
     debug(f"Current working directory : {getcwd()}")
