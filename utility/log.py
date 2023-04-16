@@ -3,7 +3,7 @@
     @author oldgod
 '''
 
-from os import getcwd, sep
+from os import getcwd, sep, makedirs
 from datetime import datetime
 from logging import INFO, getLogger, Formatter, FileHandler, StreamHandler, DEBUG
 
@@ -20,6 +20,7 @@ class Scribe:
 			"-: %(filename)s:%(lineno)s - %(funcName)s() :-" +
 			" %(message)s")
 
+        makedirs("./logs", exist_ok=True)
         self._logdir = f"{getcwd()}{sep}logs{sep}{str(datetime.now().date()).replace('-', '_')}_tpas.log" if len(ilogdir) == 0 else ilogdir
 
         # fixme: Add the functionality for checking the logs in a web format so that one can check the logs in a browser
@@ -38,6 +39,18 @@ class Scribe:
             self._logger.setLevel(DEBUG)
         else:
             self._logger.setLevel(INFO)
+
+    def enable_streamlogging(self, enable: bool):
+        if enable:
+            self._logger.addHandler(self._shandler)
+        else:
+            self._logger.removeHandler(self._shandler)
+
+    def enable_filelogging(self, enable: bool):
+        if enable:
+            self._logger.addHandler(self._fhandler)
+        else:
+            self._logger.removeHandler(self._fhandler)
 
     def set_log_file(self, log_file_path: str):
         if not isinstance(log_file_path, str) or len(log_file_path) == 0:

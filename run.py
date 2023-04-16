@@ -1,22 +1,26 @@
 #!/usr/bin/env python
 
 # standard modules
-from logging import info, debug, DEBUG
-from os import makedirs
-makedirs("./logs", exist_ok=True)
+from logging import info, debug, DEBUG, INFO
+from os import getcwd, sep
 
 # custom modules
 from utility import parse_cli_args, modules, chk_pyver, run_module, scribe
+from model import GeneralConfig
 
 # fixme: change the module file to a module.ini file providing users the capacity to change how the module should be started
-# fixme: add the code for creating the log directory at the start of the program
 
 if __name__ == "__main__":
-    # enable debug mode for now explicitly
     # fixme: add the configurability to change the logging feature from a configuration file
-    scribe.set_log_level(DEBUG)
+    fw_config = GeneralConfig()
+    fw_config.read_config(config_file_path=f"{getcwd()}{sep}config{sep}tpas.ini")
+    scribe.set_log_level(DEBUG if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1 else INFO)
+    scribe.enable_filelogging(bool(fw_config.get_config(section_name="framework", option_name="enablefile")))
+    # fixme: removing the file handler when the same is not disabled in the configuration file - needs to be checked.
+    scribe.enable_streamlogging(bool(fw_config.get_config(section_name="framework", option_name="enablestream")))
     
     info("Parsing the CLI arguments")
+    debug(f"Current working directory : {getcwd()}")
     args = parse_cli_args()
     debug(f"CLI arguments parsed : {args}")
 
