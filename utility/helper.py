@@ -23,6 +23,7 @@ def list_submodules(dir: str) -> list:
     if dir is None or not isinstance(dir, str) or len(dir) == 0:
         return modules
 
+    # fixme: add the capacity to check for the module.ini file instead of module file only
     result = glob(f"{dir}**/module")
     for module in result:
         module = module[:module.index("module")-1]

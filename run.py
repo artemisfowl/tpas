@@ -11,7 +11,6 @@ from model import GeneralConfig
 # fixme: change the module file to a module.ini file providing users the capacity to change how the module should be started
 
 if __name__ == "__main__":
-    # fixme: add the configurability to change the logging feature from a configuration file
     fw_config = GeneralConfig()
     fw_config.read_config(config_file_path=f"{getcwd()}{sep}config{sep}tpas.ini")
     scribe.set_log_level(DEBUG if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1 else INFO)
