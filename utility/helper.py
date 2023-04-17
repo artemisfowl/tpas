@@ -3,6 +3,7 @@
     @author oldgod
 '''
 
+from os import sep
 from glob import glob
 from sys import version_info, exit
 from logging import info, debug, error, root, DEBUG
@@ -15,19 +16,21 @@ def list_submodules(dir: str) -> list:
     '''
         @brief function to list all the modules present under a specific directory
         @param dir : string containing the root path where all the modules are present
+        @return Returns a list of the modules found
         @author oldgod
     '''
 
+    # fixme: convert this into a dictionary, key : string containing the name of the module, value: string containing the path of the module.ini file
     modules = []
+    print(f"directory : {dir}")
 
     if dir is None or not isinstance(dir, str) or len(dir) == 0:
         return modules
 
-    # fixme: add the capacity to check for the module.ini file instead of module file only
-    result = glob(f"{dir}**/module")
+    result = glob(f"{dir}{sep}**{sep}module.ini")
     for module in result:
         module = module[:module.index("module")-1]
-        module = module[module.rindex("/")+1:]
+        module = module[module.rindex(f"{sep}")+1:]
         modules.append(module)
 
     return modules

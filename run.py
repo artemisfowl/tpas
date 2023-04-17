@@ -13,10 +13,14 @@ from model import GeneralConfig
 if __name__ == "__main__":
     fw_config = GeneralConfig()
     fw_config.read_config(config_file_path=f"{getcwd()}{sep}config{sep}tpas.ini")
-    scribe.set_log_level(DEBUG if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1 else INFO)
-    scribe.enable_filelogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablefile")))) # type: ignore
-    scribe.enable_streamlogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablestream")))) # type: ignore
-    if fw_config.get_config(section_name="framework", option_name="enabledebug") == 1:
+    try:
+        scribe.enable_filelogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablefile")))) # type: ignore
+        scribe.enable_streamlogging(bool(int(fw_config.get_config(section_name="framework", option_name="enablestream")))) # type: ignore
+        scribe.set_log_level(DEBUG if int(fw_config.get_config(section_name="framework", option_name="enabledebug")) == 1 else INFO) # type: ignore
+    except Exception as exception:
+        print(exception)
+
+    if int(fw_config.get_config(section_name="framework", option_name="enabledebug")) == 1: #type: ignore
         debug("Logger has been setup in debug mode")
     else:
         info("Logger has been setup in info mode")
