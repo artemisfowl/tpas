@@ -35,9 +35,10 @@ if __name__ == "__main__":
 
     if args.get("list"):
         info("Showing the list of modules")
+        debug(modules)
         print("Modules available")
         count = 1
-        for module in modules:
+        for module in modules.keys():
             debug(f"{count}. {module}")
             print(f"{count}. {module}")
             count += 1

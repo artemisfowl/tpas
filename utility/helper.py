@@ -3,6 +3,7 @@
     @author oldgod
 '''
 
+from copy import deepcopy
 from os import sep
 from glob import glob
 from sys import version_info, exit
@@ -12,26 +13,26 @@ from uvicorn import run as uvrun
 
 from .constants import PYVER_MAJOR, PYVER_MINOR
 
-def list_submodules(dir: str) -> list:
+def list_submodules(dir: str) -> dict:
     '''
         @brief function to list all the modules present under a specific directory
         @param dir : string containing the root path where all the modules are present
-        @return Returns a list of the modules found
+        @return Returns a dictionary of the modules found, keys are the names of the modules, values are the paths to module specific INI files
         @author oldgod
     '''
 
     # fixme: convert this into a dictionary, key : string containing the name of the module, value: string containing the path of the module.ini file
-    modules = []
-    print(f"directory : {dir}")
+    modules = {}
 
     if dir is None or not isinstance(dir, str) or len(dir) == 0:
         return modules
 
     result = glob(f"{dir}{sep}**{sep}module.ini")
     for module in result:
+        path = deepcopy(module)
         module = module[:module.index("module")-1]
         module = module[module.rindex(f"{sep}")+1:]
-        modules.append(module)
+        modules[module] = path
 
     return modules
 

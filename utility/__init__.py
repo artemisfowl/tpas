@@ -13,4 +13,4 @@ from .log import Scribe
 
 # testme: hopefully this should enable the loggging support by default
 scribe = Scribe()
-modules = set(list_submodules(getcwd()))
+modules = list_submodules(getcwd())
