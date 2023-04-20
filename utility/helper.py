@@ -53,7 +53,6 @@ def chk_pyver():
         print(f"Python version to be used with this program : 3.10+, current version is {version_info.major}.{version_info.minor}")
         exit(-1)
 
-# fixme: provide the entire dictionary to this function, since the module configuration file needs to be read
 def run_module(module_name: str, modules: dict):
     '''
         @brief function to run the module specified, uses a switcher for any new module created
@@ -81,7 +80,6 @@ def run_module(module_name: str, modules: dict):
 
     match module_name:
         case "services":
-            # fixme: Add the code for reading the module specific configuration file
             service_config = ModuleConfig()
             service_config.name = "services"
             ConfigContainer["services"] = service_config
@@ -92,7 +90,7 @@ def run_module(module_name: str, modules: dict):
                 debug("Service module will be started")
 
                 if root.level == DEBUG:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=True)
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False)
                 else:
                     uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False)
 

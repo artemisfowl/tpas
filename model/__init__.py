@@ -5,5 +5,4 @@
 
 from .config import GeneralConfig, ModuleConfig
 
-# testme: Add a container for storing different types of configurations
 ConfigContainer = {}
