@@ -12,6 +12,7 @@ from logging import info, debug, error, root, DEBUG
 from uvicorn import run as uvrun
 
 from .constants import PYVER_MAJOR, PYVER_MINOR
+from model import ModuleConfig, ConfigContainer
 
 def list_submodules(dir: str) -> dict:
     '''
@@ -52,11 +53,12 @@ def chk_pyver():
         print(f"Python version to be used with this program : 3.10+, current version is {version_info.major}.{version_info.minor}")
         exit(-1)
 
-def run_module(module_name: str, modules: set):
+# fixme: provide the entire dictionary to this function, since the module configuration file needs to be read
+def run_module(module_name: str, modules: dict):
     '''
         @brief function to run the module specified, uses a switcher for any new module created
         @param module_name : String containing the name of the module to be run
-            modules : A set containing the names of all the modules available.
+            modules : A dictionary containing the names of all the modules available, name of module (key) and module.ini file path (value)
         @author oldgod
 
         @note please give unique names to the modules, duplicate names can cause issues with the modules loading.
@@ -67,8 +69,8 @@ def run_module(module_name: str, modules: set):
         return # fixme: add the code for raising a custom exception
 
     info("Checking if the modules is a set or not")
-    if not isinstance(modules, set):
-        error(f"Modules value is not a set")
+    if not isinstance(modules, dict):
+        error(f"Modules value is not a dict")
         return # fixme: add the code for raising a custom exception
 
     # remove the brackets from the module name
@@ -79,13 +81,20 @@ def run_module(module_name: str, modules: set):
 
     match module_name:
         case "services":
+            # fixme: Add the code for reading the module specific configuration file
+            service_config = ModuleConfig()
+            service_config.name = "services"
+            ConfigContainer["services"] = service_config
+            host = service_config.get_config(section_name="config", option_name="host", config_file_path=modules.get(module_name))
+            port = int(service_config.get_config(section_name="config", option_name="port", config_file_path=modules.get(module_name)))
+            workers = int(service_config.get_config(section_name="config", option_name="workers", config_file_path=modules.get(module_name)))
             if module_name in modules:
                 debug("Service module will be started")
 
                 if root.level == DEBUG:
-                    uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1, reload=True)
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=True)
                 else:
-                    uvrun(f"{module_name}:app", host="0.0.0.0", port=5000, workers=1, reload=False)
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False)
 
         case _:
             error(f"Unknown module : {module_name} specifed to be started")

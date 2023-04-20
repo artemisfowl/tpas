@@ -3,7 +3,7 @@
     @author oldgod
 '''
 
-from typing import Union
+from typing import Any, Union
 from configparser import ConfigParser
 
 class GeneralConfig:
@@ -22,6 +22,8 @@ class GeneralConfig:
     def read_config(self, config_file_path: str) -> None:
         '''
             @brief function to read the configuration specified
+            @author oldgod
+            @params config_file_path : String containing the configuration file path to be read
         '''
         if not isinstance(config_file_path, str) or len(config_file_path) == 0:
             return # fixme: add the code for raising a proper exception
@@ -32,6 +34,7 @@ class GeneralConfig:
         '''
             @brief function to get the configuration from an INI file based on the section and option specified
             @author oldgod
+            @return Returns either None or a string containing the value
         '''
         if not isinstance(section_name, str) or len(section_name) == 0:
             return None # fixme: add the code for raising a proper exception
@@ -40,3 +43,18 @@ class GeneralConfig:
         
         self.read_config(config_file_path=config_file_path)
         return self._parser.get(section_name, option_name)
+
+
+class ModuleConfig(GeneralConfig):
+    def __init__(self, name: Any=None) -> None:
+        super().__init__()
+        self.name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+

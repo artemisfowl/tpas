@@ -46,4 +46,4 @@ if __name__ == "__main__":
         info("Starting module")
         debug(f"Module name to be started : {args.get('module')}")
 
-        run_module(module_name=str(args.get("module")), modules=set(modules.keys()))
+        run_module(module_name=str(args.get("module")), modules=modules)

@@ -3,6 +3,7 @@
     @author oldgod
 '''
 
-from .config import GeneralConfig
+from .config import GeneralConfig, ModuleConfig
 
-# fixme: Add a container for storing different types of configurations
+# testme: Add a container for storing different types of configurations
+ConfigContainer = {}
