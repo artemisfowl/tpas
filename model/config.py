@@ -19,13 +19,20 @@ class GeneralConfig:
 
         self._parser = ConfigParser()
 
-    def read_config(self, config_file_path: str):
+    def read_config(self, config_file_path: str) -> None:
+        '''
+            @brief function to read the configuration specified
+        '''
         if not isinstance(config_file_path, str) or len(config_file_path) == 0:
             return # fixme: add the code for raising a proper exception
 
         self._parser.read(config_file_path)
 
     def get_config(self, section_name: str, option_name: str, config_file_path: str="") -> Union[None,str]:
+        '''
+            @brief function to get the configuration from an INI file based on the section and option specified
+            @author oldgod
+        '''
         if not isinstance(section_name, str) or len(section_name) == 0:
             return None # fixme: add the code for raising a proper exception
         if not isinstance(option_name, str) or len(option_name) == 0:

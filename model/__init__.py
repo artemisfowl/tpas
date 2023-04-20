@@ -4,3 +4,5 @@
 '''
 
 from .config import GeneralConfig
+
+# fixme: Add a container for storing different types of configurations
