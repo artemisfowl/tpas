@@ -4,23 +4,49 @@
 '''
 
 class SessionManager:
+    '''
+        @brief Session Manager class for handling test session
+        @author oldgod
+    '''
     def __init__(self) -> None:
+        '''
+            @brief Default constructor for SessionManager class
+            @author oldgod
+        '''
         self.uuid = str()
         self.name = str()
 
     @property
     def uuid(self):
+        '''
+            @brief uuid property of SessionManager
+            @author oldgod
+        '''
         return self._uuid
 
     @uuid.setter
     def uuid(self, value: str):
+        '''
+            @brief uuid property setter of SessionManager
+            @author oldgod
+            @param value : String containing the UUID
+        '''
         self._uuid = value
 
     @property
     def name(self):
+        '''
+            @brief name property of SessionManager
+            @author oldgod
+        '''
         return self._name
 
     @name.setter
     def name(self, value: str):
+        '''
+            @brief name property setter of SessionManager
+            @author oldgod
+            @param value : String containing the name of the test being run
+        '''
         self._name = value
 
