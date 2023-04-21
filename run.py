@@ -8,8 +8,6 @@ from os import getcwd, sep
 from utility import parse_cli_args, modules, chk_pyver, run_module, scribe
 from model import GeneralConfig
 
-# fixme: change the module file to a module.ini file providing users the capacity to change how the module should be started
-
 if __name__ == "__main__":
     fw_config = GeneralConfig()
     fw_config.read_config(config_file_path=f"{getcwd()}{sep}config{sep}tpas.ini")

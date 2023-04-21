@@ -27,6 +27,6 @@ async def get_service_status(request: Request):
         @author oldgod
     '''
     info("Serving status of services")
-    # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     debug("Message from status : Working")
+    # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
