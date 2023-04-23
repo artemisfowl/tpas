@@ -8,9 +8,10 @@ from logging import info, debug
 
 from fastapi import FastAPI, Request
 
-from .model import Response, ResponseCode
+from .model import Response, ResponseCode, SessionManager
 
 app = FastAPI()
+session_mgr = SessionManager()
 
 @app.get("/")
 async def get_root(request: Request):
@@ -35,5 +36,6 @@ async def get_service_status(request: Request):
 @app.get("/init")
 async def init_test(request: Request):
     info("Initializing a test session")
-    # fixme: Add the code for creating a session with the right name and 
+    session_mgr.uuid = str(uuid4())
+    debug(f"Service Manager details : {session_mgr.__dict__}")
     return Response(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
