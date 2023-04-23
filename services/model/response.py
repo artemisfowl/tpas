@@ -43,3 +43,21 @@ class Response:
             self._code = code
         if self._message != message:
             self._message = message
+
+class TestResponse(Response):
+    '''
+        @brief class containing the response details when a test session is initialized
+        @author oldgod
+    '''
+    def __init__(self, code: int, message: str, ip: str = "") -> None:
+        super().__init__(code, message, ip)
+        # testme: check if the issue presists
+        self.uuid = str()
+
+    @property
+    def uuid(self):
+        return self._uuid
+
+    @uuid.getter
+    def uuid(self, value: str):
+        self._uuid = value
