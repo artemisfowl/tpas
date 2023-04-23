@@ -3,6 +3,7 @@
     @author oldgod
 """
 
+from uuid import uuid4
 from logging import info, debug
 
 from fastapi import FastAPI, Request
@@ -30,3 +31,9 @@ async def get_service_status(request: Request):
     debug("Message from status : Working")
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
+
+@app.get("/init")
+async def init_test(request: Request):
+    info("Initializing a test session")
+    # fixme: Add the code for creating a session with the right name and 
+    return Response(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
