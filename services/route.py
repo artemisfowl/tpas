@@ -42,4 +42,5 @@ async def init_test(request: Request, test_name: str):
     debug(f"Session Manager set with test name : {test_name}")
 
     # fixme: return the uuid created which will be used to allow for the next steps to be done on the machine
+    # fixme: replace response with a derived class providing more details - maybe can be named as TestDetails
     return Response(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
