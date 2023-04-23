@@ -33,9 +33,13 @@ async def get_service_status(request: Request):
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
-@app.get("/init")
-async def init_test(request: Request):
+@app.get("/init/name={test_name}")
+async def init_test(request: Request, test_name: str):
     info("Initializing a test session")
     session_mgr.uuid = str(uuid4())
-    debug(f"Service Manager details : {session_mgr.__dict__}")
+    debug(f"Session Manager set with UUID : {session_mgr.uuid}")
+    session_mgr.name = test_name
+    debug(f"Session Manager set with test name : {test_name}")
+
+    # fixme: return the uuid created which will be used to allow for the next steps to be done on the machine
     return Response(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
