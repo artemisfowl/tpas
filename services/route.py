@@ -39,6 +39,16 @@ async def get_service_status(request: Request) -> Response:
 
 @app.get("/browsers")
 async def get_installed_browsers(request: Request) -> Response:
+    '''
+        @brief async response function returning the list of browsers installed in the system
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return returns a Response object containing the necessary details
+        @author oldgod
+    '''
+    # note: there is a module called pybrowsers - but I wish to write a custom implementation - this will require some 
+    # time for implementing the same thing but with a code twisted for me - need to decide on the core logic 
+    # implementation as well.
+
     # fixme: Add the code for finding the browsers installed on the system
     # note: this code should be working in all types of systems
     return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
