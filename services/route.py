@@ -44,7 +44,7 @@ async def get_installed_browsers(request: Request) -> Response:
     return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
 
 @app.get("/init/name={test_name}")
-async def init_test(request: Request, test_name: str) -> Response:
+async def get_init_test(request: Request, test_name: str) -> Response:
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit

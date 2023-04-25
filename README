@@ -21,6 +21,8 @@ Documentation:
 
   """
     @brief A brief description of the file contents
+    @param <param_name> : <type> containing ...
+    @return returns a ...
     @author name of the author
   """
 
