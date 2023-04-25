@@ -14,18 +14,22 @@ app = FastAPI()
 session_mgr = SessionManager()
 
 @app.get("/")
-async def get_root(request: Request):
+async def get_root(request: Request) -> Response:
     '''
         @brief async response function default index
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return returns a Response object containing the necessary details
         @author oldgod
     '''
     info("Welcome to the root URL of TPAS")
     return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS", ip=request.client[0]) # type: ignore
 
 @app.get("/status")
-async def get_service_status(request: Request):
+async def get_service_status(request: Request) -> Response:
     '''
         @brief async response function returning the status of the API(s) running
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return returns a Response object containing the necessary details
         @author oldgod
     '''
     info("Serving status of services")
@@ -33,8 +37,20 @@ async def get_service_status(request: Request):
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
+@app.get("/browsers")
+async def get_installed_browsers(request: Request) -> Response:
+    # fixme: Add the code for finding the browsers installed on the system
+    # note: this code should be working in all types of systems
+    return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
+
 @app.get("/init/name={test_name}")
-async def init_test(request: Request, test_name: str):
+async def init_test(request: Request, test_name: str) -> Response:
+    '''
+        @brief async response function for initializing a test session
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return : returns a Response object containing the necessary details
+        @author oldgod
+    '''
     info("Initializing a test session")
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
