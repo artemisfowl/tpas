@@ -54,7 +54,7 @@ async def get_installed_browsers(request: Request):
     # note: this code should be working in all types of systems
     return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
 
-@app.get("/init/name={test_name}")
+@app.get("/init-test/name={test_name}")
 async def get_init_test(request: Request, test_name: str):
     '''
         @brief async response function for initializing a test session
@@ -68,8 +68,6 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {test_name}")
 
-    # fixme: return the uuid created which will be used to allow for the next steps to be done on the machine
-    # fixme: replace response with a derived class providing more details - maybe can be named as TestDetails
     response = TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", 
             ip=request.client[0]) # type: ignore
     response.uuid = session_mgr.uuid
