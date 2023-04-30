@@ -51,8 +51,6 @@ class TestResponse(Response):
     '''
     def __init__(self, code: int, message: str, ip: str = "") -> None:
         super().__init__(code, message, ip)
-        # testme: check if the issue presists
-        self.uuid = str()
 
     @property
     def uuid(self):

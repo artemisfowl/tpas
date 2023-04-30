@@ -8,7 +8,7 @@ from logging import info, debug
 
 from fastapi import FastAPI, Request
 
-from .model import Response, ResponseCode, SessionManager
+from .model import Response, ResponseCode, SessionManager, TestResponse
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -69,4 +69,4 @@ async def get_init_test(request: Request, test_name: str):
 
     # fixme: return the uuid created which will be used to allow for the next steps to be done on the machine
     # fixme: replace response with a derived class providing more details - maybe can be named as TestDetails
-    return Response(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
+    return TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
