@@ -14,7 +14,7 @@ app = FastAPI()
 session_mgr = SessionManager()
 
 @app.get("/")
-async def get_root(request: Request) -> Response:
+async def get_root(request: Request):
     '''
         @brief async response function default index
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -25,7 +25,7 @@ async def get_root(request: Request) -> Response:
     return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS", ip=request.client[0]) # type: ignore
 
 @app.get("/status")
-async def get_service_status(request: Request) -> Response:
+async def get_service_status(request: Request):
     '''
         @brief async response function returning the status of the API(s) running
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -38,7 +38,7 @@ async def get_service_status(request: Request) -> Response:
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
 @app.get("/browsers")
-async def get_installed_browsers(request: Request) -> Response:
+async def get_installed_browsers(request: Request):
     '''
         @brief async response function returning the list of browsers installed in the system
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -54,7 +54,7 @@ async def get_installed_browsers(request: Request) -> Response:
     return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
 
 @app.get("/init/name={test_name}")
-async def get_init_test(request: Request, test_name: str) -> Response:
+async def get_init_test(request: Request, test_name: str):
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
