@@ -37,6 +37,7 @@ async def get_service_status(request: Request):
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
+# fixme: the code for this one will be added later
 @app.get("/browsers")
 async def get_installed_browsers(request: Request):
     '''
@@ -69,4 +70,17 @@ async def get_init_test(request: Request, test_name: str):
 
     # fixme: return the uuid created which will be used to allow for the next steps to be done on the machine
     # fixme: replace response with a derived class providing more details - maybe can be named as TestDetails
-    return TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
+    response = TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", 
+            ip=request.client[0]) # type: ignore
+    response.uuid = session_mgr.uuid
+    return response
+
+@app.get("/clear-session/uuid={uuid}")
+async def get_clear_test_session(request: Request, uuid: str):
+    if session_mgr.uuid != uuid:
+        return TestResponse(code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", ip=request.client[0]) # type: ignore
+
+    # if the uuid is matching, then clear the session and the test name
+    session_mgr.uuid = str()
+    session_mgr.name = str()
+    return TestResponse(code=ResponseCode.SUCCESS, message=f"Test session with UUID : {uuid} cleared", ip=request.client[0]) # type: ignore

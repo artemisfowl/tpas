@@ -51,11 +51,12 @@ class TestResponse(Response):
     '''
     def __init__(self, code: int, message: str, ip: str = "") -> None:
         super().__init__(code, message, ip)
+        self.uuid = None # type: ignore
 
     @property
     def uuid(self):
         return self._uuid
 
-    @uuid.getter
+    @uuid.setter
     def uuid(self, value: str):
         self._uuid = value
