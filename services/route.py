@@ -35,10 +35,10 @@ async def get_service_status(request: Request):
     info("Serving status of services")
     debug("Message from status : Working")
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
-    return Response(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
+    return TestResponse(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
 # fixme: the code for this one will be added later
-@app.get("/browsers")
+@app.get("/list-browsers")
 async def get_installed_browsers(request: Request):
     '''
         @brief async response function returning the list of browsers installed in the system
@@ -51,8 +51,8 @@ async def get_installed_browsers(request: Request):
     # implementation as well.
 
     # fixme: Add the code for finding the browsers installed on the system
-    # note: this code should be working in all types of systems
-    return Response(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
+    # note: this code should be working in all types of systems - what if I use the which command to check for the browsers installed
+    return TestResponse(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
 
 @app.get("/init-test/name={test_name}")
 async def get_init_test(request: Request, test_name: str):
@@ -63,13 +63,14 @@ async def get_init_test(request: Request, test_name: str):
         @author oldgod
     '''
     info("Initializing a test session")
+    if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
+        return TestResponse(code=ResponseCode.FAILURE, message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {test_name}")
 
-    response = TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", 
-            ip=request.client[0]) # type: ignore
+    response = TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
     response.uuid = session_mgr.uuid
     return response
 
