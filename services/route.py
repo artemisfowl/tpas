@@ -13,9 +13,11 @@ from .model import Response, ResponseCode, SessionManager, TestResponse
 from .constants import DEFAULT_BROWSER
 
 app = FastAPI()
-# testme: test this portion of the code
 session_mgr = SessionManager()
 
+# fixme: add the code for reloading the configuration file here
+
+# root services
 @app.get("/")
 async def get_root(request: Request):
     '''
@@ -40,8 +42,9 @@ async def get_service_status(request: Request):
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return TestResponse(code=ResponseCode.SUCCESS, message="Working", ip=request.client[0]) # type: ignore
 
+# utility services
 # fixme: the code for this one will be added later
-@app.get("/list-browsers")
+@app.get("/utils/list-browsers")
 async def get_installed_browsers(request: Request):
     '''
         @brief async response function returning the list of browsers installed in the system
@@ -63,7 +66,8 @@ async def get_installed_browsers(request: Request):
 
     return TestResponse(code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", ip=request.client[0]) # type: ignore
 
-@app.get("/init-test/name={test_name}")
+# test session services
+@app.get("/test/init-test/name={test_name}")
 async def get_init_test(request: Request, test_name: str):
     '''
         @brief async response function for initializing a test session
@@ -92,7 +96,7 @@ async def get_init_test(request: Request, test_name: str):
     response.uuid = session_mgr.uuid
     return response
 
-@app.get("/clear-session/uuid={uuid}")
+@app.get("/test/clear-session/uuid={uuid}")
 async def get_clear_test_session(request: Request, uuid: str):
     if session_mgr.uuid != uuid:
         return TestResponse(code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", ip=request.client[0]) # type: ignore

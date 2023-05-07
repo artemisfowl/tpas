@@ -22,7 +22,6 @@ def list_submodules(dir: str) -> dict:
         @author oldgod
     '''
 
-    # fixme: convert this into a dictionary, key : string containing the name of the module, value: string containing the path of the module.ini file
     modules = {}
 
     if dir is None or not isinstance(dir, str) or len(dir) == 0:
