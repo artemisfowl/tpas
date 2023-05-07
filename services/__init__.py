@@ -4,3 +4,4 @@
 """
 
 from .route import app
+from .model import SessionManager

@@ -7,10 +7,13 @@ from uuid import uuid4
 from logging import info, debug
 
 from fastapi import FastAPI, Request
+from browsers import browsers
 
 from .model import Response, ResponseCode, SessionManager, TestResponse
+from .constants import DEFAULT_BROWSER
 
 app = FastAPI()
+# testme: test this portion of the code
 session_mgr = SessionManager()
 
 @app.get("/")
@@ -46,13 +49,19 @@ async def get_installed_browsers(request: Request):
         @return returns a Response object containing the necessary details
         @author oldgod
     '''
-    # note: there is a module called pybrowsers - but I wish to write a custom implementation - this will require some 
-    # time for implementing the same thing but with a code twisted for me - need to decide on the core logic 
-    # implementation as well.
+    info("Listing the browsers installed in the system")
+    lsbrowsers = list(browsers())
+    if len(lsbrowsers) == 0:
+        return TestResponse(code=ResponseCode.FAILURE, message="No known browsers are installed", ip=request.client[0]) # type: ignore
+    lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
 
-    # fixme: Add the code for finding the browsers installed on the system
-    # note: this code should be working in all types of systems - what if I use the which command to check for the browsers installed
-    return TestResponse(code=ResponseCode.SUCCESS, message="List of browsers found", ip=request.client[0]) # type: ignore
+    # a special formatting for showing the list of browsers installed
+    lsbrowsers = ','.join(lsbrowsers)
+    debug(f'List of browsers installed : {lsbrowsers}')
+
+    # fixme: add the code to return the proper response in case no browsers are found installed in the system
+
+    return TestResponse(code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", ip=request.client[0]) # type: ignore
 
 @app.get("/init-test/name={test_name}")
 async def get_init_test(request: Request, test_name: str):
@@ -64,11 +73,20 @@ async def get_init_test(request: Request, test_name: str):
     '''
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
-        return TestResponse(code=ResponseCode.FAILURE, message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
+        return TestResponse(code=ResponseCode.FAILURE, 
+                message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {test_name}")
+
+    # fixme: add the code portion of the code for setting up the browser of choice in the session manager
+    # fixme: add the code for creating a browser session
+    lsbrowsers = list(browsers())
+    lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
+    # check in the configuration file if the browser of choice is configured or not
+    if DEFAULT_BROWSER not in lsbrowsers:
+        return TestResponse(code=ResponseCode.FAILURE, message="Test initiated, but browser not set", ip=request.client[0]) # type: ignore
 
     response = TestResponse(code=ResponseCode.SUCCESS, message="Test initiated", ip=request.client[0]) # type: ignore
     response.uuid = session_mgr.uuid

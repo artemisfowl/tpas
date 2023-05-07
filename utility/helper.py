@@ -83,16 +83,16 @@ def run_module(module_name: str, modules: dict):
             service_config = ModuleConfig()
             service_config.name = "services"
             ConfigContainer["services"] = service_config
-            host = service_config.get_config(section_name="config", option_name="host", config_file_path=modules.get(module_name))
-            port = int(service_config.get_config(section_name="config", option_name="port", config_file_path=modules.get(module_name)))
-            workers = int(service_config.get_config(section_name="config", option_name="workers", config_file_path=modules.get(module_name)))
+            host = service_config.get_config(section_name="config", option_name="host", config_file_path=modules.get(module_name)) # type: ignore
+            port = int(service_config.get_config(section_name="config", option_name="port", config_file_path=modules.get(module_name))) # type: ignore
+            workers = int(service_config.get_config(section_name="config", option_name="workers", config_file_path=modules.get(module_name))) # type: ignore
             if module_name in modules:
                 debug("Service module will be started")
 
                 if root.level == DEBUG:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False)
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
                 else:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False)
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
 
         case _:
             error(f"Unknown module : {module_name} specifed to be started")
