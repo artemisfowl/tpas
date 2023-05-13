@@ -16,6 +16,7 @@ from .utils import read_module_config
 
 app = FastAPI()
 session_mgr = SessionManager()
+# setting up the module specific configuration details in the config property
 session_mgr.config = read_module_config(configpath=f"{__file__[:__file__.rindex(sep)+1]}module.ini")
 
 # root services
