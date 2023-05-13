@@ -3,6 +3,7 @@
     @author oldgod
 """
 
+from os import sep
 from uuid import uuid4
 from logging import info, debug
 
@@ -15,11 +16,7 @@ from .utils import read_module_config
 
 app = FastAPI()
 session_mgr = SessionManager()
-
-# fixme: add the code for reloading the configuration file here
-tmp = read_module_config("./module.ini") # the path given here is not correct, the path needs to be provided in such a way that 
-# the respective module's INI file is read, the path should not be absolute, always relative path should be used
-debug(f"Information inside the parser : {tmp.__dict__}")
+session_mgr.config = read_module_config(configpath=f"{__file__[:__file__.rindex(sep)+1]}module.ini")
 
 # root services
 @app.get("/")

@@ -7,7 +7,7 @@ from typing import Union
 from configparser import ConfigParser
 from logging import info, debug
 
-def read_module_config(configpath: str) -> Union[None, ConfigParser]:
+def read_module_config(configpath: str) -> Union[None, dict]:
     if not isinstance(configpath, str) or len(configpath) == 0:
         return None
 
@@ -17,4 +17,4 @@ def read_module_config(configpath: str) -> Union[None, ConfigParser]:
     _parser.read(configpath)
 
     debug("Returning the parser instance")
-    return _parser
+    return _parser.__dict__.get("_sections")
