@@ -11,11 +11,15 @@ from browsers import browsers
 
 from .model import Response, ResponseCode, SessionManager, TestResponse
 from .constants import DEFAULT_BROWSER
+from .utils import read_module_config
 
 app = FastAPI()
 session_mgr = SessionManager()
 
 # fixme: add the code for reloading the configuration file here
+tmp = read_module_config("./module.ini") # the path given here is not correct, the path needs to be provided in such a way that 
+# the respective module's INI file is read, the path should not be absolute, always relative path should be used
+debug(f"Information inside the parser : {tmp.__dict__}")
 
 # root services
 @app.get("/")
