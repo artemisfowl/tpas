@@ -93,6 +93,7 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {test_name}")
 
+    # fixme: add code for converting the list of browsers into a dictionary
     # fixme: add the code for creating a browser session
     lsbrowsers = list(browsers())
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
