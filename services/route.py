@@ -98,7 +98,6 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.browser = lsbrowsers
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
 
-    # fixme: implement one more layer where the rest of the code will be implemented
     if session_mgr.config.get('config').get('browser'): # type: ignore
         debug(f"Session browser configuration : {session_mgr.config.get('config').get('browser')}") # type: ignore
         if session_mgr.config.get('config').get('browser') in lsbrowsers: # type: ignore
@@ -119,6 +118,7 @@ async def get_init_test(request: Request, test_name: str):
             debug("Could not find default browser in list of browsers")
             return TestResponse(code=ResponseCode.FAILURE, message="Test initiated, but browser not set", ip=request.client[0]) # type: ignore
 
+# fixme: convert this into a POST API call
 @app.get("/test/clear-session/uuid={uuid}")
 async def get_clear_test_session(request: Request, uuid: str):
     if session_mgr.uuid != uuid:
