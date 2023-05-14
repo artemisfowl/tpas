@@ -3,4 +3,4 @@
     @author oldgod
 '''
 
-DEFAULT_BROWSER = "firfox"
+DEFAULT_BROWSER = "firefox"
