@@ -93,16 +93,20 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {test_name}")
 
-    # fixme: add code for converting the list of browsers into a dictionary
     # fixme: add the code for creating a browser session
     lsbrowsers = list(browsers())
+    session_mgr.browser = lsbrowsers
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
+
+    # fixme: implement one more layer where the rest of the code will be implemented
     if session_mgr.config.get('config').get('browser'): # type: ignore
         debug(f"Session browser configuration : {session_mgr.config.get('config').get('browser')}") # type: ignore
         if session_mgr.config.get('config').get('browser') in lsbrowsers: # type: ignore
+            debug("Configured browser found in list of browsers installed")
             return TestResponse(code=ResponseCode.SUCCESS, 
                     message=f"Test initiated, browser selected : {session_mgr.config.get('config').get('browser')}", ip=request.client[0]) # type: ignore
         else:
+            debug("Configured browser is not present in the list of browsers installed")
             return TestResponse(code=ResponseCode.FAILURE, 
                     message=f"Selected browser : {session_mgr.config.get('config').get('browser')} not installed in system", ip=request.client[0]) # type: ignore
     else:

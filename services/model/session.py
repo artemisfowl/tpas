@@ -15,7 +15,7 @@ class SessionManager:
         '''
         self.uuid = str()
         self.name = str()
-        self.browser = dict()
+        self.browser = list()
         self.config = dict()
 
     @property
@@ -44,11 +44,11 @@ class SessionManager:
         return self._browser
 
     @browser.setter
-    def browser(self, value: dict):
+    def browser(self, value: list):
         '''
             @brief browser property setter for SessionManager
             @author oldgod
-            @param value : Dictionary containing the browser information to be used
+            @param value : List containing the browser information to be used
         '''
         self._browser = value
 
