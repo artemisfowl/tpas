@@ -48,7 +48,9 @@ def chk_browser(session_mgr: Any, lsbrowsers: list, request: Request):
         debug("Checking for the presence of default browser")
         if DEFAULT_BROWSER in lsbrowsers:
             debug("Found default browser in list of browsers")
-            return TestResponse(code=ResponseCode.SUCCESS, message=f"Test initiated, {DEFAULT_BROWSER} has been selected", ip=request.client[0]) # type: ignore
+            return TestResponse(code=ResponseCode.SUCCESS, message=f"Test initiated, {DEFAULT_BROWSER} has been selected", 
+                    ip=request.client[0]) # type: ignore
         else:
             debug("Could not find default browser in list of browsers")
-            return TestResponse(code=ResponseCode.FAILURE, message="Test initiated, but browser not set", ip=request.client[0]) # type: ignore
+            return TestResponse(code=ResponseCode.FAILURE, message="Test initiated, but browser not set", 
+                    ip=request.client[0]) # type: ignore
