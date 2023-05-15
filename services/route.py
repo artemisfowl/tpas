@@ -13,6 +13,7 @@ from browsers import browsers
 from .model import Response, ResponseCode, SessionManager, TestResponse
 from .constants import DEFAULT_BROWSER
 from .utils import read_module_config
+from .mangler import chk_browser
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -95,28 +96,10 @@ async def get_init_test(request: Request, test_name: str):
 
     # fixme: add the code for creating a browser session
     lsbrowsers = list(browsers())
-    session_mgr.browser = lsbrowsers
+    session_mgr.browser = lsbrowsers # set the information about the installed browsers in the session manager object
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
 
-    if session_mgr.config.get('config').get('browser'): # type: ignore
-        debug(f"Session browser configuration : {session_mgr.config.get('config').get('browser')}") # type: ignore
-        if session_mgr.config.get('config').get('browser') in lsbrowsers: # type: ignore
-            debug("Configured browser found in list of browsers installed")
-            return TestResponse(code=ResponseCode.SUCCESS, 
-                    message=f"Test initiated, browser selected : {session_mgr.config.get('config').get('browser')}", ip=request.client[0]) # type: ignore
-        else:
-            debug("Configured browser is not present in the list of browsers installed")
-            return TestResponse(code=ResponseCode.FAILURE, 
-                    message=f"Selected browser : {session_mgr.config.get('config').get('browser')} not installed in system", ip=request.client[0]) # type: ignore
-    else:
-        # the browser is not configured in the configuration file, check for the presence of the default browser
-        debug("Checking for the presence of default browser")
-        if DEFAULT_BROWSER in lsbrowsers:
-            debug("Found default browser in list of browsers")
-            return TestResponse(code=ResponseCode.SUCCESS, message=f"Test initiated, {DEFAULT_BROWSER} has been selected", ip=request.client[0]) # type: ignore
-        else:
-            debug("Could not find default browser in list of browsers")
-            return TestResponse(code=ResponseCode.FAILURE, message="Test initiated, but browser not set", ip=request.client[0]) # type: ignore
+    return chk_browser(session_mgr=session_mgr, lsbrowsers=lsbrowsers, request=request)
 
 # fixme: convert this into a POST API call
 @app.get("/test/clear-session/uuid={uuid}")
