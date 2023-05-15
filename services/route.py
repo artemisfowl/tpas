@@ -89,6 +89,7 @@ async def get_init_test(request: Request, test_name: str):
         return TestResponse(code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
 
+    # fixme: the uuid value is not getting pushed into the TestResponse object, that needs to be corrected [VVI]
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_name
