@@ -67,14 +67,10 @@ async def get_installed_browsers(request: Request):
     '''
     info("Listing the browsers installed in the system")
     lsbrowsers = list(browsers())
-    # fixme: start implementing call of update_test_response from here
-    test_response = TestResponse(code=ResponseCode.DEFAULT, message=ResponseMessage.DEFAULT, ip=request.client[0]) # type: ignore
 
     if len(lsbrowsers) == 0:
-        # fixme: add the call to update the test response object and share the 
-        test_response._code = ResponseCode.FAILURE
-        test_response._message = "No known browsers are installed"
-        return test_response
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="No known browsers installed", 
+                uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
 
@@ -82,8 +78,9 @@ async def get_installed_browsers(request: Request):
     lsbrowsers = ','.join(lsbrowsers)
     debug(f'List of browsers installed : {lsbrowsers}')
 
-    # fixme: add the code to return the proper response in case no browsers are found installed in the system
-    return TestResponse(code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", ip=request.client[0]) # type: ignore
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", 
+            uuid="", name=session_mgr.name, 
+            ip = request.client[0] if request.client else "")
 
 # test session services
 @app.get("/test/init-test/name={test_name}")
