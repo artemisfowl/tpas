@@ -10,7 +10,7 @@ from logging import info, debug
 from fastapi import FastAPI, Request
 from browsers import browsers
 
-from .model import ResponseCode, SessionManager, TestResponse, ResponseMessage
+from .model import ResponseCode, SessionManager, TestResponse
 from .model import test_response
 from .utils import read_module_config, update_test_response
 from .mangler import chk_browser
@@ -93,6 +93,7 @@ async def get_init_test(request: Request, test_name: str):
     '''
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
+        # fixme: update the code to return the updated test response
         return TestResponse(code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
 
