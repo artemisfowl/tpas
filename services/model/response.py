@@ -13,6 +13,7 @@ class ResponseCode:
     '''
     SUCCESS = 200
     FAILURE = 100
+    DEFAULT = 0
 
 class ResponseMessage:
     '''
@@ -52,6 +53,15 @@ class TestResponse(Response):
     def __init__(self, code: int, message: str, ip: str = "") -> None:
         super().__init__(code, message, ip)
         self.uuid = None # type: ignore
+        self.name = ""
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value: str):
+        self._name = value
 
     @property
     def uuid(self):

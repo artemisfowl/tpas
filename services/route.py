@@ -10,9 +10,9 @@ from logging import info, debug
 from fastapi import FastAPI, Request
 from browsers import browsers
 
-from .model import Response, ResponseCode, SessionManager, TestResponse
-from .constants import DEFAULT_BROWSER
-from .utils import read_module_config
+from .model import Response, ResponseCode, SessionManager, TestResponse, ResponseMessage
+from .model import test_response
+from .utils import read_module_config, update_test_response
 from .mangler import chk_browser
 
 app = FastAPI()
@@ -31,7 +31,9 @@ async def get_root(request: Request):
         @author oldgod
     '''
     info("Welcome to the root URL of TPAS")
-    return Response(code=ResponseCode.SUCCESS, message="Welcome to TPAS", ip=request.client[0]) # type: ignore
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message='Welcome to TPAS', 
+            uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
 
 @app.get("/status")
 async def get_service_status(request: Request):
@@ -63,8 +65,13 @@ async def get_installed_browsers(request: Request):
     '''
     info("Listing the browsers installed in the system")
     lsbrowsers = list(browsers())
+    test_response = TestResponse(code=ResponseCode.DEFAULT, message=ResponseMessage.DEFAULT, ip=request.client[0]) # type: ignore
+
     if len(lsbrowsers) == 0:
-        return TestResponse(code=ResponseCode.FAILURE, message="No known browsers are installed", ip=request.client[0]) # type: ignore
+        test_response._code = ResponseCode.FAILURE
+        test_response._message = "No known browsers are installed"
+        return test_response
+
     lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
 
     # a special formatting for showing the list of browsers installed
@@ -72,7 +79,6 @@ async def get_installed_browsers(request: Request):
     debug(f'List of browsers installed : {lsbrowsers}')
 
     # fixme: add the code to return the proper response in case no browsers are found installed in the system
-
     return TestResponse(code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", ip=request.client[0]) # type: ignore
 
 # test session services
