@@ -38,5 +38,6 @@ def update_test_response(test_response: Any, code: int, message: str, uuid: str,
 
     # property updates
     test_response.uuid = uuid
+    test_response.name = name
 
     return test_response

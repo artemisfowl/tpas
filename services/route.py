@@ -47,11 +47,15 @@ async def get_service_status(request: Request):
     debug("Message from status : Working")
 
     if len(session_mgr.uuid) > 0:
-        return TestResponse(code=ResponseCode.SUCCESS, message=f"Running Test : {session_mgr.name}", ip=request.client[0]) # type: ignore
+        return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Running Test : {session_mgr.name}", 
+                uuid="", name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
 
     # by default the message would be idle
     # note: ignoring type check for request.client[0] - NoneType is not subscriptable
-    return TestResponse(code=ResponseCode.SUCCESS, message="IDLE", ip=request.client[0]) # type: ignore
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="IDLE", 
+            uuid="", name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
 
 # utility services
 # fixme: the code for this one will be added later
@@ -99,7 +103,7 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_name
-    debug(f"Session Manager set with test name : {test_name}")
+    debug(f"Session Manager set with test name : {session_mgr.name}")
 
     # fixme: add the code for creating a browser session
     lsbrowsers = list(browsers())
