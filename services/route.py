@@ -10,7 +10,7 @@ from logging import info, debug
 from fastapi import FastAPI, Request
 from browsers import browsers
 
-from .model import Response, ResponseCode, SessionManager, TestResponse, ResponseMessage
+from .model import ResponseCode, SessionManager, TestResponse, ResponseMessage
 from .model import test_response
 from .utils import read_module_config, update_test_response
 from .mangler import chk_browser
@@ -51,8 +51,6 @@ async def get_service_status(request: Request):
                 uuid="", name=session_mgr.name, 
                 ip=request.client[0] if request.client else "")
 
-    # by default the message would be idle
-    # note: ignoring type check for request.client[0] - NoneType is not subscriptable
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="IDLE", 
             uuid="", name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
@@ -69,9 +67,11 @@ async def get_installed_browsers(request: Request):
     '''
     info("Listing the browsers installed in the system")
     lsbrowsers = list(browsers())
+    # fixme: start implementing call of update_test_response from here
     test_response = TestResponse(code=ResponseCode.DEFAULT, message=ResponseMessage.DEFAULT, ip=request.client[0]) # type: ignore
 
     if len(lsbrowsers) == 0:
+        # fixme: add the call to update the test response object and share the 
         test_response._code = ResponseCode.FAILURE
         test_response._message = "No known browsers are installed"
         return test_response
