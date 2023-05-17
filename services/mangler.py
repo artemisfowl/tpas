@@ -7,10 +7,11 @@ from typing import Any
 from logging import info, debug
 from fastapi import Request
 
-from .model import ResponseCode, TestResponse, ResponseMessage
+from .model import ResponseCode 
+from .utils import update_test_response
 from .constants import DEFAULT_BROWSER
 
-def chk_browser(session_mgr: Any, lsbrowsers: list, request: Request):
+def chk_browser(test_response: Any, session_mgr: Any, lsbrowsers: list, request: Request):
     '''
         @brief check if the configured browser/default browser is installed in the system and set up the instance accordingly
         @author oldgod
@@ -23,27 +24,28 @@ def chk_browser(session_mgr: Any, lsbrowsers: list, request: Request):
 
     if not session_mgr:
         return None # raise a custom exception here
+    if not test_response:
+        return None # raise a custom exception here
     if not isinstance(lsbrowsers, list) or len(lsbrowsers) == 0:
         return None # raise a custom exception here
 
 
     # fixme: this should be a persistent object - better create the same in the init file
-    test_response = TestResponse(code=ResponseCode.DEFAULT, message=ResponseMessage.DEFAULT)
-    test_response._ip = request.client[0] # type: ignore
-    test_response.uuid = session_mgr.uuid
+    test_response.uuid = session_mgr.uuid # this will also not be required
 
     if session_mgr.config.get('config').get('browser'): # type: ignore
         debug(f"Session browser configuration : {session_mgr.config.get('config').get('browser')}") # type: ignore
         if session_mgr.config.get('config').get('browser') in lsbrowsers: # type: ignore
             debug("Configured browser found in list of browsers installed")
-            test_response._code = ResponseCode.SUCCESS
-            test_response._message = f"Test initiated, browser selected : {session_mgr.config.get('config').get('browser')}", # type: ignore
-            return test_response
+            return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+                    message=f"Test initiated, browser selected : {session_mgr.config.get('config').get('browser')}", 
+                    uuid=session_mgr.uuid, name=session_mgr.name, ip=request.client[0] if request.client else "")
         else:
             debug("Configured browser is not present in the list of browsers installed")
-            test_response._code = ResponseCode.FAILURE
-            test_response._message = f"Selected browser : {session_mgr.config.get('config').get('browser')} not installed in system", # type: ignore
-            return test_response
+            # fixme: if this is to be returned, make sure the test instance is also cleared off, add the necessary code for this
+            return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                    message=f"Selected browser : {session_mgr.config.get('config').get('browser')} not installed in system",
+                    uuid=session_mgr.uuid, name=session_mgr.name, ip=request.client[0] if request.client else "")
     else:
         # the browser is not configured in the configuration file, check for the presence of the default browser
         debug("Checking for the presence of default browser")

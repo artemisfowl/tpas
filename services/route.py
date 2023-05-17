@@ -13,7 +13,8 @@ from browsers import browsers
 from .model import ResponseCode, SessionManager, TestResponse
 from .model import test_response
 from .utils import read_module_config, update_test_response
-from .mangler import chk_browser
+# fixme: add the right API for calling the check browser function
+#from .mangler import chk_browser
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -94,8 +95,9 @@ async def get_init_test(request: Request, test_name: str):
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
         # fixme: update the code to return the updated test response
-        return TestResponse(code=ResponseCode.FAILURE, 
-                message="Test could not be initiated, test session already active", ip=request.client[0]) # type: ignore
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Test could not be initiated, test session already active", 
+                uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
     # fixme: the uuid value is not getting pushed into the TestResponse object, that needs to be corrected [VVI]
     session_mgr.uuid = str(uuid4())
@@ -103,12 +105,10 @@ async def get_init_test(request: Request, test_name: str):
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {session_mgr.name}")
 
-    # fixme: add the code for creating a browser session
-    lsbrowsers = list(browsers())
-    session_mgr.browser = lsbrowsers # set the information about the installed browsers in the session manager object
-    lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
-
-    return chk_browser(session_mgr=session_mgr, lsbrowsers=lsbrowsers, request=request)
+    # fixme: add the code for returning the updated test response
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test initiated, name: {session_mgr.name}", 
+            uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
 
 # fixme: convert this into a POST API call
 @app.get("/test/clear-session/uuid={uuid}")
