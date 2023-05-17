@@ -99,13 +99,11 @@ async def get_init_test(request: Request, test_name: str):
                 message="Test could not be initiated, test session already active", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
-    # fixme: the uuid value is not getting pushed into the TestResponse object, that needs to be corrected [VVI]
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_name
     debug(f"Session Manager set with test name : {session_mgr.name}")
 
-    # fixme: add the code for returning the updated test response
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test initiated, name: {session_mgr.name}", 
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
@@ -114,9 +112,13 @@ async def get_init_test(request: Request, test_name: str):
 @app.get("/test/clear-session/uuid={uuid}")
 async def get_clear_test_session(request: Request, uuid: str):
     if session_mgr.uuid != uuid:
-        return TestResponse(code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", ip=request.client[0]) # type: ignore
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", 
+                uuid="", name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
 
     # if the uuid is matching, then clear the session and the test name
     session_mgr.uuid = str()
     session_mgr.name = str()
-    return TestResponse(code=ResponseCode.SUCCESS, message=f"Test session with UUID : {uuid} cleared", ip=request.client[0]) # type: ignore
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test session with UUID : {uuid} cleared", 
+            uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
