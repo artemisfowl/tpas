@@ -108,8 +108,7 @@ async def get_init_test(request: Request, test_name: str):
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
 
-# fixme: convert this into a POST API call
-@app.get("/test/clear-session/uuid={uuid}")
+@app.post("/test/clear-session/")
 async def get_clear_test_session(request: Request, uuid: str):
     if session_mgr.uuid != uuid:
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", 
