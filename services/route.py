@@ -10,8 +10,9 @@ from logging import info, debug
 from fastapi import FastAPI, Request
 from browsers import browsers
 
-from .model import ResponseCode, SessionManager, TestResponse
+from .model import ResponseCode, SessionManager
 from .model import test_response
+from .model import TestRequest
 from .utils import read_module_config, update_test_response
 # fixme: add the right API for calling the check browser function
 #from .mangler import chk_browser
@@ -94,7 +95,7 @@ async def get_init_test(request: Request, test_name: str):
     '''
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
-        # fixme: update the code to return the updated test response
+        # fixme: add the right info and debug messages here
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
@@ -109,15 +110,20 @@ async def get_init_test(request: Request, test_name: str):
             ip=request.client[0] if request.client else "")
 
 @app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, uuid: str):
-    if session_mgr.uuid != uuid:
-        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {uuid}", 
+async def get_clear_test_session(request: Request, test_request: TestRequest): 
+    # fixme: add appropriate info and debug statements here
+    info(f"About to clear session running with UUID : {test_request.uuid}")
+    if session_mgr.uuid != test_request.uuid:
+        debug("Requested UUID is not in session, please check the UUID again and then clear the test session")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {test_request.uuid}", 
                 uuid="", name=session_mgr.name, 
                 ip=request.client[0] if request.client else "")
 
     # if the uuid is matching, then clear the session and the test name
+    debug("Clearing the session manager UUID and name of the test being run")
     session_mgr.uuid = str()
     session_mgr.name = str()
-    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test session with UUID : {uuid} cleared", 
+    debug("Returning the proper updated response")
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test session with UUID : {test_request.uuid} cleared", 
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
