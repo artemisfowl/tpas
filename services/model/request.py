@@ -6,5 +6,10 @@
 from pydantic import BaseModel
 
 class TestRequest(BaseModel):
-    name: str | None = None
-    uuid: str
+    # optional values
+    name: str = ""
+    uuid: str = ""
+    admin_user: str = ""
+    admin_password: str = ""
+
+    # required values [to be added later]

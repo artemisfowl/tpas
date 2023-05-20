@@ -5,7 +5,7 @@
 
 from os import sep
 from uuid import uuid4
-from logging import info, debug
+from logging import info, debug, warn
 
 from fastapi import FastAPI, Request
 from browsers import browsers
@@ -13,6 +13,7 @@ from browsers import browsers
 from .model import ResponseCode, SessionManager
 from .model import test_response
 from .model import TestRequest
+from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
 from .utils import read_module_config, update_test_response
 # fixme: add the right API for calling the check browser function
 #from .mangler import chk_browser
@@ -57,6 +58,35 @@ async def get_service_status(request: Request):
             uuid="", name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
 
+# admin services { will be added here later }
+@app.post("/admin/clearall")
+async def post_clear_all_sessions(request: Request, test_request: TestRequest):
+    # fixme: add the necessary code for checking the admin credentials and then clearing all the test sessions running
+    info("Admin being called in order to clear all test sessions")
+    debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
+    debug(f"Clearing of all sessions requested from : {request.client[0] if request.client else 'Unidentified'}")
+
+    # the actual work gets done here
+    if test_request.admin_user == DEFAULT_ADMIN_USER:
+        if test_request.admin_password == DEFAULT_ADMIN_PASSWORD:
+            session_mgr.uuid = ""
+            session_mgr.name = ""
+
+            debug("Test session clear succesful, returning the updated response")
+            return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+                    message="Test session invalidated", 
+                    uuid="", name="", ip=request.client[0] if request.client else "")
+        else:
+            warn("Admin user is not recognized, username/password might be incorrect")
+            return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                    message="Admin username and password not matching",
+                    uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
+    else:
+        warn("Admin user is not recognized, username/password might be incorrect")
+        update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Admin username and password not matching",
+                uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
+
 # utility services
 # fixme: the code for this one will be added later
 @app.get("/utils/list-browsers")
@@ -71,6 +101,7 @@ async def get_installed_browsers(request: Request):
     lsbrowsers = list(browsers())
 
     if len(lsbrowsers) == 0:
+        debug("No known browsers are installed in the system")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="No known browsers installed", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
@@ -111,7 +142,6 @@ async def get_init_test(request: Request, test_name: str):
 
 @app.post("/test/clear-session/")
 async def get_clear_test_session(request: Request, test_request: TestRequest): 
-    # fixme: add appropriate info and debug statements here
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         debug("Requested UUID is not in session, please check the UUID again and then clear the test session")

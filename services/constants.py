@@ -4,3 +4,6 @@
 '''
 
 DEFAULT_BROWSER = "firefox"
+
+DEFAULT_ADMIN_USER = "oldgod"
+DEFAULT_ADMIN_PASSWORD = "oldgod"
