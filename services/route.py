@@ -100,7 +100,7 @@ async def get_installed_browsers(request: Request):
     lsbrowsers = list(browsers())
 
     if len(lsbrowsers) == 0:
-        debug("No known browsers are installed in the system")
+        warn("No known browsers are installed in the system")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="No known browsers installed", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
@@ -126,12 +126,11 @@ async def get_init_test(request: Request, test_request: TestRequest):
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
         # fixme: add the right info and debug messages here
-        debug("Session already active, will not be starting a new test session")
+        warn("Session already active, will not be starting a new test session")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
-    # fixme: add the condition for checking if the name is provided or not
     if len(test_request.name) == 0:
         warn("Test name has not been provided, will not be able to create a test session")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="Test name was not provided", 
@@ -150,7 +149,7 @@ async def get_init_test(request: Request, test_request: TestRequest):
 async def get_clear_test_session(request: Request, test_request: TestRequest): 
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
-        debug("Requested UUID is not in session, please check the UUID again and then clear the test session")
+        warn("Requested UUID is not in session, please check the UUID again and then clear the test session")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message=f"Invalid Test UUID provided : {test_request.uuid}", 
                 uuid="", name=session_mgr.name, 
                 ip=request.client[0] if request.client else "")
