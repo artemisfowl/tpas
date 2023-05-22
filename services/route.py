@@ -119,6 +119,8 @@ async def get_installed_browsers(request: Request):
 async def get_test_types_supported(request: Request):
     '''
         @brief async response function returning the list of test types supported by the platform
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return returns a Response object containing the necessary details
         @author oldgod
     '''
     info("Returning the list of Test Types")
