@@ -14,6 +14,7 @@ from .model import ResponseCode, SessionManager
 from .model import test_response
 from .model import TestRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
+from .constants import TestType # fixme: add the code for setting the test type
 from .utils import read_module_config, update_test_response
 # fixme: add the right API for calling the check browser function
 #from .mangler import chk_browser
@@ -113,6 +114,16 @@ async def get_installed_browsers(request: Request):
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", 
             uuid="", name=session_mgr.name, 
             ip = request.client[0] if request.client else "")
+
+@app.get("/utils/list-test-types")
+async def get_test_types_supported(request: Request):
+    '''
+        @brief async response function returning the list of test types supported by the platform
+        @author oldgod
+    '''
+    info("Returning the list of Test Types")
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="List of Test Types : UI, SHELL, MISC", 
+            uuid="", name="", ip=request.client[0] if request.client else "")
 
 # test session services
 @app.post("/test/init-test")
