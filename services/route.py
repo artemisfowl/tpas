@@ -66,7 +66,6 @@ async def post_clear_all_sessions(request: Request, test_request: TestRequest):
     debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
     debug(f"Clearing of all sessions requested from : {request.client[0] if request.client else 'Unidentified'}")
 
-    # the actual work gets done here
     if test_request.admin_user == DEFAULT_ADMIN_USER:
         if test_request.admin_password == DEFAULT_ADMIN_PASSWORD:
             session_mgr.uuid = ""
@@ -88,7 +87,7 @@ async def post_clear_all_sessions(request: Request, test_request: TestRequest):
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
 # utility services
-# fixme: the code for this one will be added later
+# fixme: convert this API into a POST request
 @app.get("/utils/list-browsers")
 async def get_installed_browsers(request: Request):
     '''
@@ -116,8 +115,8 @@ async def get_installed_browsers(request: Request):
             ip = request.client[0] if request.client else "")
 
 # test session services
-@app.get("/test/init-test/name={test_name}")
-async def get_init_test(request: Request, test_name: str):
+@app.post("/test/init-test")
+async def get_init_test(request: Request, test_request: TestRequest):
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -127,13 +126,20 @@ async def get_init_test(request: Request, test_name: str):
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
         # fixme: add the right info and debug messages here
+        debug("Session already active, will not be starting a new test session")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
+    # fixme: add the condition for checking if the name is provided or not
+    if len(test_request.name) == 0:
+        warn("Test name has not been provided, will not be able to create a test session")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="Test name was not provided", 
+                uuid="", name="", ip=request.client[0] if request.client else "")
+
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
-    session_mgr.name = test_name
+    session_mgr.name = test_request.name
     debug(f"Session Manager set with test name : {session_mgr.name}")
 
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test initiated, name: {session_mgr.name}", 

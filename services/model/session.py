@@ -17,6 +17,12 @@ class SessionManager:
         self.name = str()
         self.browser = list()
         self.config = dict()
+        self.type = 0 # this needs to be set to the value of a constant
+
+        '''
+            @note the type property defines the type of test that is to be initiated. The values as of now could be SYSTEM/UI/MIXED
+            SYSTEM - it is 
+        '''
 
     @property
     def config(self):
