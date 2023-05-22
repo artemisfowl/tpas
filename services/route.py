@@ -12,7 +12,7 @@ from browsers import browsers
 
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import TestRequest
+from .model import TestRequest, AdminRequest, InitTestRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
 from .constants import TestType # fixme: add the code for setting the test type
 from .utils import read_module_config, update_test_response
@@ -61,7 +61,7 @@ async def get_service_status(request: Request):
 
 # admin services { will be added here later }
 @app.post("/admin/clearall")
-async def post_clear_all_sessions(request: Request, test_request: TestRequest):
+async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
     # fixme: add the necessary code for checking the admin credentials and then clearing all the test sessions running
     info("Admin being called in order to clear all test sessions")
     debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
@@ -127,7 +127,7 @@ async def get_test_types_supported(request: Request):
 
 # test session services
 @app.post("/test/init-test")
-async def get_init_test(request: Request, test_request: TestRequest):
+async def get_init_test(request: Request, test_request: InitTestRequest):
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -147,6 +147,8 @@ async def get_init_test(request: Request, test_request: TestRequest):
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="Test name was not provided", 
                 uuid="", name="", ip=request.client[0] if request.client else "")
 
+    # fixme: Add the matcher code for checking the test type defined in the init test request
+
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_request.name
@@ -157,7 +159,7 @@ async def get_init_test(request: Request, test_request: TestRequest):
             ip=request.client[0] if request.client else "")
 
 @app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, test_request: TestRequest): 
+async def get_clear_test_session(request: Request, test_request: InitTestRequest): 
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")

@@ -11,8 +11,18 @@ class TestRequest(BaseModel):
     # optional values
     name: str = ""
     uuid: str = ""
-    admin_user: str = ""
-    admin_password: str = ""
     test_type: str = TestType.NONE.name
 
     # required values [to be added later]
+
+class InitTestRequest(BaseModel):
+    # optional values
+    name: str = ""
+
+    # required values
+    uuid: str
+
+class AdminRequest(BaseModel):
+    # required values
+    admin_user: str
+    admin_password: str
