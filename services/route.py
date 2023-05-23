@@ -14,8 +14,9 @@ from .model import ResponseCode, SessionManager
 from .model import test_response
 from .model import AdminRequest, InitTestRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
-from .constants import TestType # fixme: add the code for setting the test type
+from .constants import TestType
 from .utils import read_module_config, update_test_response
+
 # fixme: add the right API for calling the check browser function
 #from .mangler import chk_browser
 
@@ -62,7 +63,6 @@ async def get_service_status(request: Request):
 # admin services { will be added here later }
 @app.post("/admin/clearall")
 async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
-    # fixme: add the necessary code for checking the admin credentials and then clearing all the test sessions running
     info("Admin being called in order to clear all test sessions")
     debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
     debug(f"Clearing of all sessions requested from : {request.client[0] if request.client else 'Unidentified'}")
@@ -88,7 +88,6 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
 # utility services
-# fixme: convert this API into a POST request
 @app.get("/utils/list-browsers")
 async def get_installed_browsers(request: Request):
     '''
@@ -138,7 +137,6 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
     '''
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
-        # fixme: add the right info and debug messages here
         warn("Session already active, will not be starting a new test session")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
                 message="Test could not be initiated, test session already active", 
