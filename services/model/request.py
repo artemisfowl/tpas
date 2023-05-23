@@ -21,6 +21,7 @@ class InitTestRequest(BaseModel):
 
     # required values
     uuid: str
+    test_type: str
 
 class AdminRequest(BaseModel):
     # required values

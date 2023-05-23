@@ -12,7 +12,7 @@ from browsers import browsers
 
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import TestRequest, AdminRequest, InitTestRequest
+from .model import AdminRequest, InitTestRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
 from .constants import TestType # fixme: add the code for setting the test type
 from .utils import read_module_config, update_test_response
@@ -149,12 +149,27 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="Test name was not provided", 
                 uuid="", name="", ip=request.client[0] if request.client else "")
 
-    # fixme: Add the matcher code for checking the test type defined in the init test request
+    match test_request.test_type:
+        case TestType.UI.name:
+            debug("Test type is of UI - meaning automated test would be running on the UI")
+            session_mgr.type = TestType.UI.value
+        case TestType.SHELL.name:
+            debug("Test type is of SHELL - meaning the automated test would be running shell commands")
+            session_mgr.type = TestType.SHELL.value
+        case TestType.MISC.name:
+            debug("Test type is of MISC - meaning the automated test can use a mixture of UI as well as SHELL commands")
+            session_mgr.type = TestType.MISC.value
+        case _:
+            warn("Unknown Test Type defined - return appropriate test response")
+            return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                    message="Unknown Test Type defined, supported types are UI/SHELL/MISC", 
+                    uuid="", name="", ip=request.client[0] if request.client else "")
 
     session_mgr.uuid = str(uuid4())
     debug(f"Session Manager set with UUID : {session_mgr.uuid}")
     session_mgr.name = test_request.name
     debug(f"Session Manager set with test name : {session_mgr.name}")
+    debug(f"Session Manager set with test_type : {session_mgr.type}")
 
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test initiated, name: {session_mgr.name}", 
             uuid=session_mgr.uuid, name=session_mgr.name, 

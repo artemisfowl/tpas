@@ -25,6 +25,14 @@ class SessionManager:
         '''
 
     @property
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, value: int):
+        self._type = value
+
+    @property
     def config(self):
         '''
             @brief configuration property of the SessionManager
