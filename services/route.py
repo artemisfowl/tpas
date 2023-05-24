@@ -98,6 +98,17 @@ async def get_installed_browsers(request: Request):
     '''
     info("Listing the browsers installed in the system")
     lsbrowsers = list(browsers())
+    debug(f"Entire information of lsbrowsers: {lsbrowsers}")
+    lbrowsers = []
+
+    # fixme: fix the format of the browsers and show the relevant information
+    for browser in lsbrowsers:
+        tmp = {}
+        tmp['browser_type'] = browser.get('browser_type')
+        tmp['install_path'] = browser.get('path').split()[-1]
+        tmp["version"] = browser.get("version")
+        debug(f"tmp data : {tmp}")
+        lbrowsers.append(tmp)
 
     if len(lsbrowsers) == 0:
         warn("No known browsers are installed in the system")
@@ -110,7 +121,7 @@ async def get_installed_browsers(request: Request):
     lsbrowsers = ','.join(lsbrowsers)
     debug(f'List of browsers installed : {lsbrowsers}')
 
-    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lsbrowsers}", 
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lbrowsers}", 
             uuid="", name=session_mgr.name, 
             ip = request.client[0] if request.client else "")
 
@@ -151,6 +162,8 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         case TestType.UI.name:
             debug("Test type is of UI - meaning automated test would be running on the UI")
             session_mgr.type = TestType.UI.value
+            # fixme: set the list of browsers found installed - 
+            # should the framework automatically download the appropriate driver?
         case TestType.SHELL.name:
             debug("Test type is of SHELL - meaning the automated test would be running shell commands")
             session_mgr.type = TestType.SHELL.value

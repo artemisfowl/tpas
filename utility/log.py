@@ -4,10 +4,10 @@
 '''
 
 from os import getcwd, sep, makedirs
+from pathlib import Path
 from datetime import datetime
 from logging import INFO, getLogger, Formatter, FileHandler, StreamHandler, DEBUG
 
-# fixme: check if it is better to use a class or a simple function should do
 class Scribe:
     '''
         @brief Scribe class responsible for logging details
@@ -20,8 +20,9 @@ class Scribe:
 			"-: %(filename)s:%(lineno)s - %(funcName)s() :-" +
 			" %(message)s")
 
-        makedirs("./logs", exist_ok=True)
-        self._logdir = f"{getcwd()}{sep}logs{sep}{str(datetime.now().date()).replace('-', '_')}_tpas.log" if len(ilogdir) == 0 else ilogdir
+        makedirs(ilogdir if len(ilogdir) > 0 else f"{str(Path.home())}{sep}.config{sep}tpas{sep}logs", exist_ok=True)
+        # fixme: Update the path properly if ilogdir value is provided
+        self._logdir = f"{str(Path.home())}{sep}.config{sep}tpas{sep}logs{sep}{str(datetime.now().date()).replace('-', '_')}_tpas.log" if len(ilogdir) == 0 else ilogdir
 
         # fixme: Add the functionality for checking the logs in a web format so that one can check the logs in a browser
         self._fhandler = FileHandler(self._logdir) # note: this will be responsible for writing to a file

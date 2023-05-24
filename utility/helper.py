@@ -89,7 +89,8 @@ def run_module(module_name: str, modules: dict):
                 debug("Service module will be started")
 
                 if root.level == DEBUG:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
+                    # fixme: applying reload=True causes an infinte loop the moment logs are updated, rather move the logs to a different location
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=True) # type: ignore
                 else:
                     uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
 
