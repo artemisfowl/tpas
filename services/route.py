@@ -102,7 +102,6 @@ async def get_installed_browsers(request: Request):
     debug(f"Entire information of lsbrowsers: {lsbrowsers}")
     lbrowsers = []
 
-    # fixme: fix the format of the browsers and show the relevant information
     for browser in lsbrowsers:
         tmp = {}
         tmp['browser_type'] = browser.get('browser_type')
