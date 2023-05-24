@@ -97,6 +97,7 @@ async def get_installed_browsers(request: Request):
         @author oldgod
     '''
     info("Listing the browsers installed in the system")
+
     lsbrowsers = list(browsers())
     debug(f"Entire information of lsbrowsers: {lsbrowsers}")
     lbrowsers = []
@@ -114,12 +115,6 @@ async def get_installed_browsers(request: Request):
         warn("No known browsers are installed in the system")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="No known browsers installed", 
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
-
-    lsbrowsers = [browser.get("browser_type") for browser in lsbrowsers]
-
-    # a special formatting for showing the list of browsers installed
-    lsbrowsers = ','.join(lsbrowsers)
-    debug(f'List of browsers installed : {lsbrowsers}')
 
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lbrowsers}", 
             uuid="", name=session_mgr.name, 
