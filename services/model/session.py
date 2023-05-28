@@ -3,6 +3,8 @@
     @author oldgod
 '''
 
+from typing import Any
+
 class SessionManager:
     '''
         @brief Session Manager class for handling test session
@@ -23,6 +25,25 @@ class SessionManager:
             @note the type property defines the type of test that is to be initiated. The values as of now could be SYSTEM/UI/MIXED
             SYSTEM - it is 
         '''
+
+        self.driver = None
+        self.shell = None
+
+    @property
+    def shell(self):
+        return self._shell
+
+    @shell.setter
+    def shell(self, value: Any):
+        self._shell = value
+
+    @property
+    def driver(self):
+        return self._driver
+
+    @driver.setter
+    def driver(self, value: Any):
+        self._driver = value
 
     @property
     def type(self):

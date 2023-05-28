@@ -18,7 +18,7 @@ from .constants import TestType
 from .utils import read_module_config, update_test_response
 
 # fixme: add the right API for calling the check browser function
-#from .mangler import chk_browser
+from .mangler import create_ui_test_session_resources
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -156,13 +156,15 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         case TestType.UI.name:
             debug("Test type is of UI - meaning automated test would be running on the UI")
             session_mgr.type = TestType.UI.value
-            # fixme: set the list of browsers found installed - 
-            # should the framework automatically download the appropriate driver?
+
+            create_ui_test_session_resources(session_mgr=session_mgr)
         case TestType.SHELL.name:
             debug("Test type is of SHELL - meaning the automated test would be running shell commands")
+            # fixme: add the respective code in mangler for handling the creation of a session with shell details
             session_mgr.type = TestType.SHELL.value
         case TestType.MISC.name:
             debug("Test type is of MISC - meaning the automated test can use a mixture of UI as well as SHELL commands")
+            # fixme: add the code for handling the creating of both UI session as well as a shell instance
             session_mgr.type = TestType.MISC.value
         case _:
             warn("Unknown Test Type defined - return appropriate test response")

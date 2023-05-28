@@ -4,13 +4,29 @@
 '''
 
 from typing import Any
-from logging import info, debug
+from logging import info, debug, warn
 from fastapi import Request
+from browsers import browsers
 
-from .model import ResponseCode 
+from .model import ResponseCode, SessionManager
 from .utils import update_test_response
-from .constants import DEFAULT_BROWSER
+from .constants import DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE
 
+# fixme: recreate the function for the creation of the UI session
+def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
+    if not isinstance(session_mgr, SessionManager):
+        warn("Session instance not provided, returning control to calling function")
+        return EXIT_FAILURE
+
+    info("Starting to create the test session")
+
+    # fixme: check the browser which is installed in the system
+    installed_browsers = list(browsers())
+    debug(f"Installed browsers : {installed_browsers}")
+
+    return EXIT_SUCCESS
+
+# fixme: the following function needs to be rewritten
 def chk_browser(test_response: Any, session_mgr: Any, lsbrowsers: list, request: Request):
     '''
         @brief check if the configured browser/default browser is installed in the system and set up the instance accordingly

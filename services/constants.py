@@ -15,3 +15,6 @@ class TestType(Enum):
     SHELL = 200
     MISC = 300
     NONE = 1000
+
+EXIT_SUCCESS = 0
+EXIT_FAILURE = -1
