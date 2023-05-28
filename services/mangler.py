@@ -25,9 +25,25 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     info("Starting to create the test session")
 
+    info("Debug lines are not being printed")
+
     # fixme: check the browser which is installed in the system
     installed_browsers = list(browsers())
     debug(f"Installed browsers : {installed_browsers}")
+
+    # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
+    for browser in installed_browsers:
+        tmp = {}
+        tmp['browser_type'] = browser.get('browser_type')
+        tmp['install_path'] = browser.get('path').split()[-1]
+        tmp["version"] = browser.get("version")
+        debug(f"tmp data : {tmp}")
+        session_mgr.browser.append(tmp)
+
+    debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
+
+    # create the instance of webdriver based on the browsers installed and the configured browser
+    debug(f"Default Browser name : {DEFAULT_BROWSER}")
 
     return EXIT_SUCCESS
 
