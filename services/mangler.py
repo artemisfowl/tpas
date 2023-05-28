@@ -14,6 +14,11 @@ from .constants import DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE
 
 # fixme: recreate the function for the creation of the UI session
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
+    '''
+        @brief function to create ui test resource.
+        @author oldgod
+        @return Returns an integer, 0 when opertion is successfull else -1
+    '''
     if not isinstance(session_mgr, SessionManager):
         warn("Session instance not provided, returning control to calling function")
         return EXIT_FAILURE
