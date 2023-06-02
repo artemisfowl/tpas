@@ -42,8 +42,11 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
 
-    # create the instance of webdriver based on the browsers installed and the configured browser
-    debug(f"Default Browser name : {DEFAULT_BROWSER}")
+    # fixme: check if the browser information is provided or not
+    configured_browser = DEFAULT_BROWSER if not session_mgr.config.get("config").get("browser") else session_mgr.config.get("config").get("browser") # type: ignore
+
+    # fixme: add code to return error code in case the driver path is not specified in case the driver is specified
+    debug(f"Browser configured : {configured_browser}")
 
     return EXIT_SUCCESS
 
