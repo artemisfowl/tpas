@@ -25,8 +25,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     info("Starting to create the test session")
 
-    info("Debug lines are not being printed")
-
     # fixme: check the browser which is installed in the system
     installed_browsers = list(browsers())
     debug(f"Installed browsers : {installed_browsers}")
@@ -42,11 +40,17 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
 
-    # fixme: check if the browser information is provided or not
-    configured_browser = DEFAULT_BROWSER if not session_mgr.config.get("config").get("browser") else session_mgr.config.get("config").get("browser") # type: ignore
-
-    # fixme: add code to return error code in case the driver path is not specified in case the driver is specified
-    debug(f"Browser configured : {configured_browser}")
+    # fixme: check if the browser information is provided or not - if the browser is not configured, use the default browser, 
+    # update the same in the log file
+    config = session_mgr.config.get("config")
+    if config:
+        if not config.get("browser"): # if the browser is not specified, please select the default browser
+            warn(f"Browser is not specified, creating webdriver session for default browser : {DEFAULT_BROWSER}")
+            # fixme: add the code for creating the webdriver for the default browser
+        else:
+            debug(f"Creating webdriver session for specified browser : {config.get('browser')}")
+            # fixme: add the code for creating the webdriver for the specified browser
+            pass
 
     return EXIT_SUCCESS
 
