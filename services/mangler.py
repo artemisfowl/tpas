@@ -47,12 +47,9 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     if config:
         if not config.get("browser"): # if the browser is not specified, please select the default browser
             warn(f"Browser is not specified, creating webdriver session for default browser : {DEFAULT_BROWSER}")
-            # fixme: add the code for downloading the right binary based on the default browser version - just download the most 
-            # recent version of geckodriver and be done with it.
-            debug(f"Latest geckodriver version : {get_url_details(url=DEFAULT_LATEST_DRIVER_URL)}")
+
             debug(f"Version of latest geckodriver : {get_url_details(url=DEFAULT_LATEST_DRIVER_URL).split('/')[-1]}")
-            # fixme: store the result of this function call - this will be returning a string
-            get_latest_default_driver_url(driver_version=get_url_details(url=DEFAULT_LATEST_DRIVER_URL).split('/')[-1],
+            final_download_url = get_latest_default_driver_url(driver_version=get_url_details(url=DEFAULT_LATEST_DRIVER_URL).split('/')[-1],
                     driver_download_base_url=DEFAULT_BROWSER_DRIVER_BASE_URL) # type: ignore
 
             # fixme: add the code for creating the webdriver for the default browser
