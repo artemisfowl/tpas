@@ -15,6 +15,7 @@
     * [x] Add all imports to the __init__.py file
     * [x] Add a constants file containing all the necessary constants for the services module
     * [ ] Relocate backend logic to mangler file
+    * [ ] Port code for downloading the correct version of geckodriver since the default browser is firefox
     * [ ] Create web driver session based on the configured browser
     * [ ] If no configured browser, create the selenium web driver session for the default browser
 
