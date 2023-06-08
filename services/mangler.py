@@ -7,13 +7,13 @@ from typing import Any
 from logging import info, debug, warn
 from fastapi import Request
 from browsers import browsers
+from os import sep
+from pathlib import Path
 
 from .model import ResponseCode, SessionManager
-from .utils import update_test_response, get_url_details, get_latest_default_driver_url
-from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, 
-        DEFAULT_LATEST_DRIVER_URL, DEFAULT_BROWSER_DRIVER_BASE_URL)
+from .utils import update_test_response
+from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY)
 
-# fixme: recreate the function for the creation of the UI session
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
         @brief function to create ui test resource.
@@ -26,7 +26,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     info("Starting to create the test session")
 
-    # fixme: check the browser which is installed in the system
     installed_browsers = list(browsers())
     debug(f"Installed browsers : {installed_browsers}")
 
@@ -45,12 +44,24 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     # update the same in the log file
     config = session_mgr.config.get("config")
     if config:
-        if not config.get("browser"): # if the browser is not specified, please select the default browser
+        if not config.get("browser"): # default browser handling
             warn(f"Browser is not specified, creating webdriver session for default browser : {DEFAULT_BROWSER}")
 
-            debug(f"Version of latest geckodriver : {get_url_details(url=DEFAULT_LATEST_DRIVER_URL).split('/')[-1]}")
-            final_download_url = get_latest_default_driver_url(driver_version=get_url_details(url=DEFAULT_LATEST_DRIVER_URL).split('/')[-1],
-                    driver_download_base_url=DEFAULT_BROWSER_DRIVER_BASE_URL) # type: ignore
+            module_directory_path = __file__[:__file__.rfind(__name__[:__name__.find('.')])]
+            if not module_directory_path.endswith(sep):
+                module_directory_path += sep
+            debug(f"Module directory path : {module_directory_path}")
+
+            final_driver_location = f"{module_directory_path}{DEFAULT_DRIVER_BINARY}"
+            debug(f"Final default driver binary location : {final_driver_location}")
+
+            if Path(final_driver_location).is_file():
+                debug("Web driver binary file found")
+
+                # fixme: add the code for creating a webdriver session based on the parameters provided in the request
+            else:
+                warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint")
+                # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
 
             # fixme: add the code for creating the webdriver for the default browser
         else:

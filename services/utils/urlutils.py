@@ -13,6 +13,8 @@ def get_url_details(url: str):
         @param url : String containing the source URL which redirects to the final URL
         @return Returns the URL where the source URL provided in the params redirects to
         @author oldgod
+
+        @note This function is kept here so that later on enhancements could be done
     '''
     info("Getting the redirected URL details")
     if not url or len(url) == 0:
@@ -30,6 +32,8 @@ def get_latest_default_driver_url(driver_version: str, driver_download_base_url:
             driver_download_base_url : String containing the base URL where the version and other 
             platform architecture details will be substituted
         @return Returns the final URL from which the file is to be downloaded
+
+        @note This function is kept here so that later on enhancements could be done
     '''
     # fixme: add the code for returning the right URL
     download_path = ""

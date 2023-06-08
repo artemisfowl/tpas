@@ -10,7 +10,9 @@ DEFAULT_BROWSER = "firefox"
 # fixme: add the default driver binary location to this constant - DEFAULT_DRIVER_BINARY
 # append to this the home location and the location of the file or module
 DEFAULT_DRIVER_BINARY = "services/driver/geckodriver"
-# note: this URL will be used to query the most recent version of driver present
+
+# note: this URL will be used to query the most recent version of driver present -
+# the following constants can be used later for enhancements
 DEFAULT_LATEST_DRIVER_URL = "https://github.com/mozilla/geckodriver/releases/latest"
 DEFAULT_BROWSER_DRIVER_BASE_URL = "https://github.com/mozilla/geckodriver/releases/download/{}/geckodriver-{}-{}.{}"
 
