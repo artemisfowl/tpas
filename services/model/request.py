@@ -17,7 +17,7 @@ class TestRequest(BaseModel):
 
 class InitTestRequest(BaseModel):
     # optional values [to be added later]
-    latch: bool = False
+    latch: bool = False # note: if latch is enabled, the browser has to be triggered in the right mode by the user by logging into the test machine
 
     # required values
     name: str
