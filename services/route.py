@@ -3,7 +3,7 @@
     @author oldgod
 """
 
-from os import sep
+from os import sep, makedirs
 from uuid import uuid4
 from logging import info, debug, warn
 
@@ -13,7 +13,7 @@ from browsers import browsers
 from .model import ResponseCode, SessionManager
 from .model import test_response
 from .model import AdminRequest, InitTestRequest, EndTestRequest
-from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
+from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY
 from .constants import TestType
 from .utils import read_module_config, update_test_response
 
@@ -25,6 +25,14 @@ session_mgr = SessionManager()
 # setting up the module specific configuration details in the config property
 # ignoring the property warning 
 session_mgr.config = read_module_config(configpath=f"{__file__[:__file__.rindex(sep)+1]}module.ini") # type: ignore
+
+# create the web UI default browser driver binary path at runtime
+g_module_directory_path = __file__[:__file__.rfind(__name__[:__name__.find('.')])]
+if not g_module_directory_path.endswith(sep):
+    g_module_directory_path += sep
+g_final_driver_location = f"{g_module_directory_path}{DEFAULT_DRIVER_BINARY}"
+debug(f"Creating driver binary directory path : {g_final_driver_location[:g_final_driver_location.rfind(sep)]}")
+makedirs(g_final_driver_location[:g_final_driver_location.rfind(sep)], exist_ok=True)
 
 # root services
 @app.get("/")
