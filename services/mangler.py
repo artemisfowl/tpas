@@ -3,15 +3,12 @@
     @author oldgod
 '''
 
-from typing import Any
 from logging import info, debug, warn
-from fastapi import Request
 from browsers import browsers
 from os import sep
 from pathlib import Path
 
-from .model import ResponseCode, SessionManager
-from .utils import update_test_response
+from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY)
 
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
