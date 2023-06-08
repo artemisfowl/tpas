@@ -16,12 +16,17 @@ class TestRequest(BaseModel):
     # required values [to be added later]
 
 class InitTestRequest(BaseModel):
-    # optional values
-    name: str = ""
+    # optional values [to be added later]
 
     # required values
-    uuid: str
+    name: str
     test_type: str
+
+class EndTestRequest(BaseModel):
+    # required values
+    uuid: str
+
+    # optional value [to be added later]
 
 class AdminRequest(BaseModel):
     # required values

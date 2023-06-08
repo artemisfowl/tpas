@@ -12,7 +12,7 @@ from browsers import browsers
 
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import AdminRequest, InitTestRequest
+from .model import AdminRequest, InitTestRequest, EndTestRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER
 from .constants import TestType
 from .utils import read_module_config, update_test_response
@@ -183,7 +183,7 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
             ip=request.client[0] if request.client else "")
 
 @app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, test_request: InitTestRequest): 
+async def get_clear_test_session(request: Request, test_request: EndTestRequest): 
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")
