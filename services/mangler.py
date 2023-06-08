@@ -40,8 +40,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
 
-    # fixme: check if the browser information is provided or not - if the browser is not configured, use the default browser, 
-    # update the same in the log file
     config = session_mgr.config.get("config")
     if config:
         if not config.get("browser"): # default browser handling
@@ -57,67 +55,13 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
             if Path(final_driver_location).is_file():
                 debug("Web driver binary file found")
-
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
             else:
-                warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint")
                 # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
-
-            # fixme: add the code for creating the webdriver for the default browser
+                warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint")
         else:
             debug(f"Creating webdriver session for specified browser : {config.get('browser')}")
-            # fixme: add the code for downloading the right binary based on the configured browser version
             # fixme: add the code for creating the webdriver for the specified browser
             pass
 
     return EXIT_SUCCESS
-
-# fixme: the following function needs to be rewritten
-def chk_browser(test_response: Any, session_mgr: Any, lsbrowsers: list, request: Request):
-    '''
-        @brief check if the configured browser/default browser is installed in the system and set up the instance accordingly
-        @author oldgod
-        @param session_mgr: An object of the Session class
-                lsbrowsers: list containing the names of the browsers installed
-
-        @return returns None in case the parameters are not provided, else returns a TestResponse object with the appropriate message
-    '''
-    info("About to check if the required browser is installed on the system or not")
-
-    if not session_mgr:
-        return None # raise a custom exception here
-    if not test_response:
-        return None # raise a custom exception here
-    if not isinstance(lsbrowsers, list) or len(lsbrowsers) == 0:
-        return None # raise a custom exception here
-
-
-    # fixme: this should be a persistent object - better create the same in the init file
-    test_response.uuid = session_mgr.uuid # this will also not be required
-
-    if session_mgr.config.get('config').get('browser'): # type: ignore
-        debug(f"Session browser configuration : {session_mgr.config.get('config').get('browser')}") # type: ignore
-        if session_mgr.config.get('config').get('browser') in lsbrowsers: # type: ignore
-            debug("Configured browser found in list of browsers installed")
-            return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
-                    message=f"Test initiated, browser selected : {session_mgr.config.get('config').get('browser')}", 
-                    uuid=session_mgr.uuid, name=session_mgr.name, ip=request.client[0] if request.client else "")
-        else:
-            debug("Configured browser is not present in the list of browsers installed")
-            # fixme: if this is to be returned, make sure the test instance is also cleared off, add the necessary code for this
-            return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
-                    message=f"Selected browser : {session_mgr.config.get('config').get('browser')} not installed in system",
-                    uuid=session_mgr.uuid, name=session_mgr.name, ip=request.client[0] if request.client else "")
-    else:
-        # the browser is not configured in the configuration file, check for the presence of the default browser
-        debug("Checking for the presence of default browser")
-        if DEFAULT_BROWSER in lsbrowsers:
-            debug("Found default browser in list of browsers")
-            test_response._code = ResponseCode.SUCCESS
-            test_response._message = f"Test initiated, {DEFAULT_BROWSER} has been selected"
-            return test_response
-        else:
-            debug("Could not find default browser in list of browsers")
-            test_response._code = ResponseCode.FAILURE
-            test_response._message = "Test initiated, but browser not set"
-            return test_response
