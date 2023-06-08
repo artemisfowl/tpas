@@ -17,6 +17,7 @@ class TestRequest(BaseModel):
 
 class InitTestRequest(BaseModel):
     # optional values [to be added later]
+    latch: bool = False
 
     # required values
     name: str
