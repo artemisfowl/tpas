@@ -23,7 +23,6 @@ from .mangler import create_ui_test_session_resources
 app = FastAPI()
 session_mgr = SessionManager()
 # setting up the module specific configuration details in the config property
-# ignoring the property warning 
 session_mgr.config = read_module_config(configpath=f"{__file__[:__file__.rindex(sep)+1]}module.ini") # type: ignore
 
 # create the web UI default browser driver binary path at runtime
@@ -160,7 +159,7 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="Test name was not provided", 
                 uuid="", name="", ip=request.client[0] if request.client else "")
 
-    match test_request.test_type:
+    match test_request.test_type.upper():
         case TestType.UI.name:
             debug("Test type is of UI - meaning automated test would be running on the UI")
             session_mgr.type = TestType.UI.value
