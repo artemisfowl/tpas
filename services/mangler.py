@@ -53,6 +53,8 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
             if Path(final_driver_location).is_file():
                 debug("Web driver binary file found")
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
+
+                # design: how the latching can also be done for the browser - default as well as configured
             else:
                 # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
                 warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint")

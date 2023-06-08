@@ -163,7 +163,6 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         case TestType.UI.name:
             debug("Test type is of UI - meaning automated test would be running on the UI")
             session_mgr.type = TestType.UI.value
-
             create_ui_test_session_resources(session_mgr=session_mgr)
         case TestType.SHELL.name:
             debug("Test type is of SHELL - meaning the automated test would be running shell commands")
