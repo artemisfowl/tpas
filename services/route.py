@@ -4,7 +4,6 @@
 """
 
 from os import sep, makedirs
-from typing import Annotated
 from uuid import uuid4
 from logging import info, debug, warn
 from pathlib import Path
