@@ -4,15 +4,17 @@
 """
 
 from os import sep, makedirs
+from typing import Annotated
 from uuid import uuid4
 from logging import info, debug, warn
+from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, File, UploadFile, Depends
 from browsers import browsers
 
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import AdminRequest, InitTestRequest, EndTestRequest
+from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY
 from .constants import TestType
 from .utils import read_module_config, update_test_response
@@ -140,7 +142,7 @@ async def get_test_types_supported(request: Request):
 
 # test session services
 @app.post("/test/init-test")
-async def get_init_test(request: Request, test_request: InitTestRequest):
+async def get_init_test(request: Request, test_request: InitTestRequest = Depends()):
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -188,8 +190,49 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
 
+@app.post("/test/upload-file/")
+def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
+    # note: if the test session is not active, this is the response that all test/* endpoints should be sending out
+    info("About to receive the uploaded file")
+    if session_mgr.uuid != upload_request.uuid:
+        warn("Requested UUID is not in session, please create a test session using /test/init-test endpoint")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE,
+                message="Requested UUID is not in session, please create a test session using /test/init-test endpoint",
+                uuid="", name=session_mgr.name,
+                ip=request.client[0] if request.client else "")
+
+    if not isinstance(upload_request.destination_dir, str):
+        warn(f"Destination directory : {upload_request.destination_dir} is not proper")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Destination directory value is not proper", 
+                uuid=session_mgr.uuid, name=session_mgr.name,
+                ip=request.client[0] if request.client else "")
+
+    destination = DEFAULT_DRIVER_BINARY[:DEFAULT_DRIVER_BINARY.rfind(f"{sep}")] if len(upload_request.destination_dir) == 0 else upload_request.destination_dir
+    debug(f"Destination directory : {destination}")
+    # fixme: add the code to check if the destination directory provided exists or not
+    '''
+
+    try:
+        # testme: the following code should be storing the file in the root directory
+        with open(file.filename, "wb") as uf: # uf is short for uploaded file # type: ignore
+            while contents := file.file.read(1024 * 1024):
+                uf.write(contents)
+        debug("Uploading file")
+        # fixme: write the code for returning the right updated response
+    except Exception:
+        # fixme: add the code for returning the right updated response
+        warn("Exception occurred while trying to upload file")
+
+    '''
+    response_tmp = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"Uploaded file : {file.filename} saved in destination : {destination}", 
+            uuid=session_mgr.uuid, name=session_mgr.name,
+            ip=request.client[0] if request.client else "")
+    debug(f"Response tmp : {response_tmp.__dict__}")
+
 @app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, test_request: EndTestRequest): 
+async def get_clear_test_session(request: Request, test_request: EndTestRequest = Depends()): 
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")

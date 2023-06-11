@@ -26,7 +26,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     installed_browsers = list(browsers())
     debug(f"Installed browsers : {installed_browsers}")
 
-    # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
     for browser in installed_browsers:
         tmp = {}
         tmp['browser_type'] = browser.get('browser_type')
@@ -53,7 +52,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
             if Path(final_driver_location).is_file():
                 debug("Web driver binary file found")
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
-
+                # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
                 # design: how the latching can also be done for the browser - default as well as configured
             else:
                 # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
