@@ -142,7 +142,7 @@ async def get_test_types_supported(request: Request):
 
 # test session services
 @app.post("/test/init-test")
-async def get_init_test(request: Request, test_request: InitTestRequest = Depends()):
+async def get_init_test(request: Request, test_request: InitTestRequest):
     '''
         @brief async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
@@ -208,6 +208,7 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
                 uuid=session_mgr.uuid, name=session_mgr.name,
                 ip=request.client[0] if request.client else "")
 
+    # fixme: since this API is specific to uploading any kind of file, the destination directory should be a required field
     destination = DEFAULT_DRIVER_BINARY[:DEFAULT_DRIVER_BINARY.rfind(f"{sep}")] if len(upload_request.destination_dir) == 0 else upload_request.destination_dir
     debug(f"Destination directory : {destination}")
     # fixme: add the code to check if the destination directory provided exists or not
@@ -231,8 +232,10 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
             ip=request.client[0] if request.client else "")
     debug(f"Response tmp : {response_tmp.__dict__}")
 
+    return response_tmp
+
 @app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, test_request: EndTestRequest = Depends()): 
+async def get_clear_test_session(request: Request, test_request: EndTestRequest): 
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")
