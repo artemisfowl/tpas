@@ -30,10 +30,9 @@ class EndTestRequest(BaseModel):
 
 class FileUploadRequest(BaseModel):
     # required values
-    uuid: str
+    destination_dir: str
 
-    # optional values
-    destination_dir: str = ""
+    # optional values [will be added later]
 
 class AdminRequest(BaseModel):
     # required values

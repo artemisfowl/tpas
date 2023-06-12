@@ -139,6 +139,52 @@ async def get_test_types_supported(request: Request):
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="List of Test Types : UI, SHELL, MISC", 
             uuid="", name="", ip=request.client[0] if request.client else "")
 
+@app.post("/utils/upload-file/")
+def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
+    '''
+        @bref utility function for uploading a specified file to the desired location
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @param upload_request : FileUploadRequest object, contains the value of destination directory in the server
+        @return returns a Response object containing the necessary details
+        @author oldgod
+    '''
+    info("Starting upload of file")
+    if not isinstance(upload_request.destination_dir, str):
+        warn(f"Destination directory : {upload_request.destination_dir} is not proper")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Destination directory value is not proper", 
+                uuid=session_mgr.uuid, name=session_mgr.name,
+                ip=request.client[0] if request.client else "")
+
+    # fixme: since this API is specific to uploading any kind of file, the destination directory should be a required field
+    #destination = DEFAULT_DRIVER_BINARY[:DEFAULT_DRIVER_BINARY.rfind(f"{sep}")] if len(upload_request.destination_dir) == 0 else upload_request.destination_dir
+    #debug(f"Destination directory : {destination}")
+
+    debug(f"Creating the directory specified : {upload_request.destination_dir}")
+    makedirs(upload_request.destination_dir, exist_ok=True)
+
+    try:
+        remote_dir = f"{upload_request.destination_dir}{sep}{file.filename}"
+        debug(f"Uploading file : {remote_dir}")
+        with open(remote_dir, "wb") as uf: # uf is short for uploaded file # type: ignore
+            debug("Writing to file")
+            while contents := file.file.read(1024 * 1024):
+                debug(f"Written : {len(contents)}")
+                uf.write(contents)
+        # fixme: write the code for returning the right updated response
+    except Exception:
+        # fixme: add the code for returning the right updated response
+        warn("Exception occurred while trying to upload file")
+
+    response_tmp = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"Uploaded file : {file.filename} saved in destination : {upload_request.destination_dir}", 
+            uuid=session_mgr.uuid, name=session_mgr.name,
+            ip=request.client[0] if request.client else "")
+    debug(f"Response tmp : {response_tmp.__dict__}")
+
+    return response_tmp
+
+
 # test session services
 @app.post("/test/init-test")
 async def get_init_test(request: Request, test_request: InitTestRequest):
@@ -188,50 +234,6 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test initiated, name: {session_mgr.name}", 
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
-
-@app.post("/test/upload-file/")
-def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
-    # note: if the test session is not active, this is the response that all test/* endpoints should be sending out
-    info("About to receive the uploaded file")
-    if session_mgr.uuid != upload_request.uuid:
-        warn("Requested UUID is not in session, please create a test session using /test/init-test endpoint")
-        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE,
-                message="Requested UUID is not in session, please create a test session using /test/init-test endpoint",
-                uuid="", name=session_mgr.name,
-                ip=request.client[0] if request.client else "")
-
-    if not isinstance(upload_request.destination_dir, str):
-        warn(f"Destination directory : {upload_request.destination_dir} is not proper")
-        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
-                message="Destination directory value is not proper", 
-                uuid=session_mgr.uuid, name=session_mgr.name,
-                ip=request.client[0] if request.client else "")
-
-    # fixme: since this API is specific to uploading any kind of file, the destination directory should be a required field
-    destination = DEFAULT_DRIVER_BINARY[:DEFAULT_DRIVER_BINARY.rfind(f"{sep}")] if len(upload_request.destination_dir) == 0 else upload_request.destination_dir
-    debug(f"Destination directory : {destination}")
-    # fixme: add the code to check if the destination directory provided exists or not
-    '''
-
-    try:
-        # testme: the following code should be storing the file in the root directory
-        with open(file.filename, "wb") as uf: # uf is short for uploaded file # type: ignore
-            while contents := file.file.read(1024 * 1024):
-                uf.write(contents)
-        debug("Uploading file")
-        # fixme: write the code for returning the right updated response
-    except Exception:
-        # fixme: add the code for returning the right updated response
-        warn("Exception occurred while trying to upload file")
-
-    '''
-    response_tmp = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
-            message=f"Uploaded file : {file.filename} saved in destination : {destination}", 
-            uuid=session_mgr.uuid, name=session_mgr.name,
-            ip=request.client[0] if request.client else "")
-    debug(f"Response tmp : {response_tmp.__dict__}")
-
-    return response_tmp
 
 @app.post("/test/clear-session/")
 async def get_clear_test_session(request: Request, test_request: EndTestRequest): 
