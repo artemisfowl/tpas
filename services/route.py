@@ -5,8 +5,9 @@
 
 from os import sep, makedirs
 from uuid import uuid4
-from logging import info, debug, warn
+from logging import info, debug, warn, error
 from pathlib import Path
+from traceback import format_exc
 
 from fastapi import FastAPI, Request, File, UploadFile, Depends
 from browsers import browsers
@@ -149,6 +150,7 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
         @author oldgod
     '''
     info("Starting upload of file")
+    # fixme: transfer the logic of uploading the file to a separate common function
     if not isinstance(upload_request.destination_dir, str):
         warn(f"Destination directory : {upload_request.destination_dir} is not proper")
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
@@ -161,6 +163,7 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
     #debug(f"Destination directory : {destination}")
 
     debug(f"Creating the directory specified : {upload_request.destination_dir}")
+    # fixme: the directory should only be created when the directory does not exist
     makedirs(upload_request.destination_dir, exist_ok=True)
 
     try:
@@ -171,10 +174,13 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
             while contents := file.file.read(1024 * 1024):
                 debug(f"Written : {len(contents)}")
                 uf.write(contents)
-        # fixme: write the code for returning the right updated response
-    except Exception:
-        # fixme: add the code for returning the right updated response
+    except Exception as exc:
         warn("Exception occurred while trying to upload file")
+        error(format_exc())
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message=f"Exception occurred while trying to upload file : {file.filename}",
+                uuid="", name="", 
+                ip=request.client[0] if request.client else "")
 
     response_tmp = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message=f"Uploaded file : {file.filename} saved in destination : {upload_request.destination_dir}", 
