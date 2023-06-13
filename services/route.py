@@ -182,13 +182,10 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
                 uuid="", name="", 
                 ip=request.client[0] if request.client else "")
 
-    response_tmp = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message=f"Uploaded file : {file.filename} saved in destination : {upload_request.destination_dir}", 
             uuid=session_mgr.uuid, name=session_mgr.name,
             ip=request.client[0] if request.client else "")
-    debug(f"Response tmp : {response_tmp.__dict__}")
-
-    return response_tmp
 
 
 # test session services
