@@ -158,13 +158,12 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
                 uuid=session_mgr.uuid, name=session_mgr.name,
                 ip=request.client[0] if request.client else "")
 
-    # fixme: since this API is specific to uploading any kind of file, the destination directory should be a required field
-    #destination = DEFAULT_DRIVER_BINARY[:DEFAULT_DRIVER_BINARY.rfind(f"{sep}")] if len(upload_request.destination_dir) == 0 else upload_request.destination_dir
-    #debug(f"Destination directory : {destination}")
-
-    debug(f"Creating the directory specified : {upload_request.destination_dir}")
-    # fixme: the directory should only be created when the directory does not exist
-    makedirs(upload_request.destination_dir, exist_ok=True)
+    debug(f"Checking if the directory specified exists or not : {upload_request.destination_dir}")
+    if not Path(upload_request.destination_dir).is_dir():
+        debug(f"Destination directory : {upload_request.destination_dir} not present, creating it")
+        makedirs(upload_request.destination_dir)
+    else:
+        debug(f"Destination directory : {upload_request.destination_dir} already exists")
 
     try:
         remote_dir = f"{upload_request.destination_dir}{sep}{file.filename}"
@@ -174,7 +173,7 @@ def post_upload_file(request: Request, upload_request: FileUploadRequest = Depen
             while contents := file.file.read(1024 * 1024):
                 debug(f"Written : {len(contents)}")
                 uf.write(contents)
-    except Exception as exc:
+    except Exception as _:
         warn("Exception occurred while trying to upload file")
         error(format_exc())
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
