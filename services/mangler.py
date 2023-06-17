@@ -23,19 +23,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
     info("Starting to create the test session")
 
-    installed_browsers = list(browsers())
-    debug(f"Installed browsers : {installed_browsers}")
-
-    for browser in installed_browsers:
-        tmp = {}
-        tmp['browser_type'] = browser.get('browser_type')
-        tmp['install_path'] = browser.get('path').split()[-1]
-        tmp["version"] = browser.get("version")
-        debug(f"tmp data : {tmp}")
-        session_mgr.browser.append(tmp)
-
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
-
     config = session_mgr.config.get("config")
     if config:
         if not config.get("browser"): # default browser handling

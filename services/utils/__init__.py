@@ -4,5 +4,5 @@
 '''
 
 from .fileutils import read_module_config
-from .misc import update_test_response
+from .misc import update_test_response, find_installed_browsers
 from .urlutils import get_url_details, get_latest_default_driver_url

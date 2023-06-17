@@ -8,6 +8,7 @@
 '''
 
 from typing import Any
+from browsers import browsers
 
 def update_test_response(test_response: Any, code: int, message: str, uuid: str, name: str="", ip: str=""):
     '''
@@ -41,3 +42,21 @@ def update_test_response(test_response: Any, code: int, message: str, uuid: str,
     test_response.name = name
 
     return test_response
+
+def find_installed_browsers():
+    '''
+        @brief function to find the installed browsers
+        @return returns a list containing all the details of the browsers installed 
+        @author oldgod
+    '''
+    installed_browsers = list(browsers())
+    rlist = []
+
+    for browser in installed_browsers:
+        tmp = {}
+        tmp['browser_type'] = browser.get('browser_type')
+        tmp['install_path'] = browser.get('path').split()[-1]
+        tmp["version"] = browser.get("version")
+        rlist.append(tmp)
+
+    return rlist

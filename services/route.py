@@ -8,6 +8,8 @@ from uuid import uuid4
 from logging import info, debug, warn, error
 from pathlib import Path
 from traceback import format_exc
+from platform import system, release, version as platform_version
+from json import dumps
 
 from fastapi import FastAPI, Request, File, UploadFile, Depends
 from browsers import browsers
@@ -17,7 +19,7 @@ from .model import test_response
 from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY
 from .constants import TestType
-from .utils import read_module_config, update_test_response
+from .utils import read_module_config, update_test_response, find_installed_browsers
 
 # fixme: add the right API for calling the check browser function
 from .mangler import create_ui_test_session_resources
@@ -26,6 +28,7 @@ app = FastAPI()
 session_mgr = SessionManager()
 # setting up the module specific configuration details in the config property
 session_mgr.config = read_module_config(configpath=f"{__file__[:__file__.rindex(sep)+1]}module.ini") # type: ignore
+session_mgr.browser = find_installed_browsers()
 
 # create the web UI default browser driver binary path at runtime
 g_module_directory_path = __file__[:__file__.rfind(__name__[:__name__.find('.')])]
@@ -140,8 +143,32 @@ async def get_test_types_supported(request: Request):
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="List of Test Types : UI, SHELL, MISC", 
             uuid="", name="", ip=request.client[0] if request.client else "")
 
+@app.get("/utils/system-details")
+async def get_system_details(request: Request):
+    '''
+        @brief function to get the system details - architecture, software version, OS version and the like
+        @param request : fastapi.Request object, automatically taken when this endpoint is hit
+        @return returns a Response object containing the system details
+        @@author oldgod
+    '''
+    # fixme: add the code for showning the system details in a proper manner in the message
+    info("Getting the system details")
+
+    system_details = {}
+    system_details["os_type"] = system()
+    system_details["os_release"] = release()
+    system_details["os_release_version"] = platform_version()
+    system_details["browsers"] = session_mgr.browser
+    debug(f"System Details : {dumps(system_details, indent=2)}")
+
+    # fixme: send the details in a proper format
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"System details are as follows", 
+            uuid="", name="",
+            ip=request.client[0] if request.client else "")
+
 @app.post("/utils/upload-file/")
-def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
+async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
     '''
         @bref utility function for uploading a specified file to the desired location
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
