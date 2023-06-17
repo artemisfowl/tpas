@@ -149,7 +149,7 @@ async def get_system_details(request: Request):
         @brief function to get the system details - architecture, software version, OS version and the like
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @return returns a Response object containing the system details
-        @@author oldgod
+        @author oldgod
     '''
     # fixme: add the code for showning the system details in a proper manner in the message
     info("Getting the system details")
@@ -161,11 +161,14 @@ async def get_system_details(request: Request):
     system_details["browsers"] = session_mgr.browser
     debug(f"System Details : {dumps(system_details, indent=2)}")
 
-    # fixme: send the details in a proper format
-    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
-            message=f"System details are as follows", 
+    # fixme: send the details in a proper format  - the system details should be sent out in it's own format
+    rval = {}
+    rval["response"] = test_response.__dict__
+    rval["system_details"] = system_details
+    rval["response"] = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"System details are as follows", 
             uuid="", name="",
             ip=request.client[0] if request.client else "")
+    return rval
 
 @app.post("/utils/upload-file/")
 async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
