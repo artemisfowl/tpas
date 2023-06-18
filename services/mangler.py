@@ -45,6 +45,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
             else:
                 # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
                 warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint in services/driver location")
+                return EXIT_FAILURE
         else:
             debug(f"Creating webdriver session for specified browser : {config.get('browser')}")
             # fixme: add the code for creating the webdriver for the specified browser

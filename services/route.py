@@ -17,7 +17,7 @@ from browsers import browsers
 from .model import ResponseCode, SessionManager
 from .model import test_response
 from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest
-from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY
+from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY, EXIT_FAILURE
 from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
 
@@ -242,7 +242,10 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
         case TestType.UI.name:
             debug("Test type is of UI - meaning automated test would be running on the UI")
             session_mgr.type = TestType.UI.value
-            create_ui_test_session_resources(session_mgr=session_mgr)
+            if create_ui_test_session_resources(session_mgr=session_mgr) == EXIT_FAILURE:
+                return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                        message="Kindly upload the file using /utils/fileupload endpoint in services/driver location", 
+                        uuid="", name="", ip=request.client[0] if request.client else "")
         case TestType.SHELL.name:
             debug("Test type is of SHELL - meaning the automated test would be running shell commands")
             # fixme: add the respective code in mangler for handling the creation of a session with shell details
