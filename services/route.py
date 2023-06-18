@@ -151,9 +151,9 @@ async def get_system_details(request: Request):
         @return returns a Response object containing the system details
         @author oldgod
     '''
-    # fixme: add the code for showning the system details in a proper manner in the message
     info("Getting the system details")
 
+    # fixme: move the code to proper functions in mangler
     system_details = {}
     system_details["os_type"] = system()
     system_details["os_release"] = release()
@@ -161,7 +161,6 @@ async def get_system_details(request: Request):
     system_details["browsers"] = session_mgr.browser
     debug(f"System Details : {dumps(system_details, indent=2)}")
 
-    # fixme: send the details in a proper format  - the system details should be sent out in it's own format
     rval = {}
     rval["response"] = test_response.__dict__
     rval["system_details"] = system_details
@@ -180,6 +179,7 @@ async def post_upload_file(request: Request, upload_request: FileUploadRequest =
         @author oldgod
     '''
     info("Starting upload of file")
+
     # fixme: transfer the logic of uploading the file to a separate common function
     if not isinstance(upload_request.destination_dir, str):
         warn(f"Destination directory : {upload_request.destination_dir} is not proper")
