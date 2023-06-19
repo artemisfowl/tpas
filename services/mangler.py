@@ -4,12 +4,12 @@
 '''
 
 from logging import info, debug, warn
-from browsers import browsers
 from os import sep
 from pathlib import Path
+from psutil import process_iter
 
 from .model import SessionManager
-from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY)
+from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
@@ -39,11 +39,19 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
             if Path(final_driver_location).is_file():
                 debug("Web driver binary file found")
+                # fixme: add the code for checking if the browser is already running or not
+                for process in process_iter():
+                    if DEFAULT_BROWSER in process.name():
+                        if DEFAULT_BROWSER_REMOTE_CONTROL_MODE in process.cmdline():
+                            # fixme: add code for connecting to existing remote control mode instance
+                            debug(f"Process names : {process.name()}, executable : {process.exe()} in remote control mode")
+                        else:
+                            # fixme: add code for connecting to new instance
+                            debug(f"Process names : {process.name()}, executable : {process.exe()} in normal mode")
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
                 # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
                 # design: how the latching can also be done for the browser - default as well as configured
             else:
-                # fixme: add the endpoint /utils/fileupload and allow for uploading file from the remote machine
                 warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint in services/driver location")
                 return EXIT_FAILURE
         else:

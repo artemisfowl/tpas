@@ -15,6 +15,7 @@ DEFAULT_DRIVER_BINARY = "services/driver/geckodriver"
 # the following constants can be used later for enhancements
 DEFAULT_LATEST_DRIVER_URL = "https://github.com/mozilla/geckodriver/releases/latest"
 DEFAULT_BROWSER_DRIVER_BASE_URL = "https://github.com/mozilla/geckodriver/releases/download/{}/geckodriver-{}-{}.{}"
+DEFAULT_BROWSER_REMOTE_CONTROL_MODE = "--marionette"
 
 DEFAULT_ADMIN_USER = "oldgod"
 DEFAULT_ADMIN_PASSWORD = "oldgod"
