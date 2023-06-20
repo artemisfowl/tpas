@@ -7,7 +7,7 @@ Todo:
 Enhancement features:
  - Allow for LunarVim or VScode for easy integration into the software.
  - Allow for easy configuration of modules using INI files
- - Allow for getting the list of browsers installed(cross-platform implementation - Mac, Windows as well as Linux)
+ - Allow for getting the list of browsers installed(cross-platform implementation - Mac, Windows as well as Linux) [done]
 
 Coding and Commenting Style:
   - Always use snake_case as opposed to camelCase.
@@ -22,12 +22,12 @@ Documentation:
   - All the files, whether directly under tpas or submodules need to have the following structure to documentation strings.
 
   """
-    @brief A brief description of the file contents
-    @param <param_name> : <type> containing ...
-    @return returns a ...
-    @author name of the author
+    - **@brief** A brief description of the file contents
+    - **@param** <param_name> : <type> containing ...
+    - **@return** returns a ...
+    - **@author** name of the author
 
-    @note note for the programmer
+    **@note** note for the programmer
   """
 
   - At times, @note can be added in the documentation in order for updating the programmer about certain specifics of a file.
