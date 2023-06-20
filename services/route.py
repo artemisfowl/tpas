@@ -21,7 +21,7 @@ from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVE
 from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
 
-# fixme: add the right API for calling the check browser function
+# fixme: add more functions to mangler and reduce the number of LoC in the route file
 from .mangler import create_ui_test_session_resources
 
 app = FastAPI()
@@ -73,6 +73,33 @@ async def get_service_status(request: Request):
     debug("Services are idle, no test session is running")
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="IDLE", 
             uuid="", name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
+
+@app.get("/version", tags=["module"])
+async def get_module_version(request: Request):
+    '''
+        - **@brief** async function to show the release version of this module
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns the version number of the module based on the version specified in module configuration
+        - **@author** oldgod
+    '''
+    info("Getting the version number of the module")
+
+    # fixme: add the relevant function in mangler and call it here
+    debug(f"Session manager details : {session_mgr.__dict__}")
+    version_number = session_mgr.config.get('config').get('version') if session_mgr.config.get('config') else None # type: ignore
+    debug(f"Version number as present in configuration file : {version_number}")
+
+    if not version_number:
+        error("Version number not specified in configuration file")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Version number of release not specified",
+                uuid="", name="", 
+                ip=request.client[0] if request.client else "")
+
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"Version number : {version_number}",
+            uuid="", name="", 
             ip=request.client[0] if request.client else "")
 
 # admin services { will be added here later }
