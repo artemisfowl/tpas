@@ -39,35 +39,38 @@ debug(f"Creating driver binary directory path : {g_final_driver_location[:g_fina
 makedirs(g_final_driver_location[:g_final_driver_location.rfind(sep)], exist_ok=True)
 
 # root services
-@app.get("/")
+@app.get("/", tags=["module"])
 async def get_root(request: Request):
     '''
-        @brief async response function default index
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return returns a Response object containing the necessary details
-        @author oldgod
+        - **@brief** async response function default index
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object containing the necessary details
+        - **@author** oldgod
     '''
     info("Welcome to the root URL of TPAS")
+
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message='Welcome to TPAS', 
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
 
-@app.get("/status")
+@app.get("/status", tags=["module"])
 async def get_service_status(request: Request):
     '''
-        @brief async response function returning the status of the API(s) running
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return returns a Response object containing the necessary details
-        @author oldgod
+        - **@brief** async response function returning the status of the API(s) running
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object stating if the sessions is in IDLE state(when no test sessions are being executed) 
+                    else shows the name of the test session UUID
+        - **@author** oldgod
     '''
     info("Serving status of services")
-    debug("Message from status : Working")
 
     if len(session_mgr.uuid) > 0:
+        debug(f"Test session active, session name : {session_mgr.name}, session UUID : {session_mgr.uuid}")
         return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Running Test : {session_mgr.name}", 
                 uuid="", name=session_mgr.name, 
                 ip=request.client[0] if request.client else "")
 
+    debug("Services are idle, no test session is running")
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="IDLE", 
             uuid="", name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
@@ -103,10 +106,11 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
 @app.get("/utils/list-browsers")
 async def get_installed_browsers(request: Request):
     '''
-        @brief async response function returning the list of browsers installed in the system
+        - **@brief** async response function returning the list of browsers installed in the system
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @return returns a Response object containing the necessary details
         @author oldgod
+        @note this is a deprecated service
     '''
     info("Listing the browsers installed in the system")
 
@@ -134,7 +138,7 @@ async def get_installed_browsers(request: Request):
 @app.get("/utils/list-test-types")
 async def get_test_types_supported(request: Request):
     '''
-        @brief async response function returning the list of test types supported by the platform
+        - **@brief** async response function returning the list of test types supported by the platform
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @return returns a Response object containing the necessary details
         @author oldgod
@@ -146,7 +150,7 @@ async def get_test_types_supported(request: Request):
 @app.get("/utils/system-details")
 async def get_system_details(request: Request):
     '''
-        @brief function to get the system details - architecture, software version, OS version and the like
+        - **@brief** function to get the system details - architecture, software version, OS version and the like
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @return returns a Response object containing the system details
         @author oldgod
@@ -172,7 +176,7 @@ async def get_system_details(request: Request):
 @app.post("/utils/upload-file/")
 async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
     '''
-        @bref utility function for uploading a specified file to the desired location
+        @brief utility function for uploading a specified file to the desired location
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @param upload_request : FileUploadRequest object, contains the value of destination directory in the server
         @return returns a Response object containing the necessary details
@@ -221,7 +225,7 @@ async def post_upload_file(request: Request, upload_request: FileUploadRequest =
 @app.post("/test/init-test")
 async def get_init_test(request: Request, test_request: InitTestRequest):
     '''
-        @brief async response function for initializing a test session
+        - **@brief** async response function for initializing a test session
         @param request : fastapi.Request object, automatically taken when this endpoint is hit
         @return : returns a Response object containing the necessary details
         @author oldgod
