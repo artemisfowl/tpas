@@ -110,14 +110,15 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
 # utility services
-@app.get("/utils/list-browsers")
+@app.get("/utils/list-browsers", tags=["utils"], deprecated=True)
 async def get_installed_browsers(request: Request):
     '''
         - **@brief** async response function returning the list of browsers installed in the system
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return returns a Response object containing the necessary details
-        @author oldgod
-        @note this is a deprecated service
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object containing the necessary details
+        - **@author** oldgod
+
+        **@note** this is a deprecated service, please use /utils/system-details endpoint for the entire system information
     '''
     info("Listing the browsers installed in the system")
 
