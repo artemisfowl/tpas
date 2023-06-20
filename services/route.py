@@ -76,8 +76,15 @@ async def get_service_status(request: Request):
             ip=request.client[0] if request.client else "")
 
 # admin services { will be added here later }
-@app.post("/admin/clearall")
+@app.post("/admin/clearall", tags=["admin"])
 async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
+    '''
+        - **@brief** async response function used for clearing the Test session when the session UUID is misplaced
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@param** test_request : AdminRequest object, contains the administrator username and password
+        - **@return** returns a successful response in case the session is invalidated/cleared, else a failure response
+        - **@author** oldgod
+    '''
     info("Admin being called in order to clear all test sessions")
     debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
     debug(f"Clearing of all sessions requested from : {request.client[0] if request.client else 'Unidentified'}")
