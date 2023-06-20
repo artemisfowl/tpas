@@ -181,14 +181,14 @@ async def get_system_details(request: Request):
             ip=request.client[0] if request.client else "")
     return rval
 
-@app.post("/utils/upload-file/")
+@app.post("/utils/upload-file/", tags=["utils"])
 async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):
     '''
-        @brief utility function for uploading a specified file to the desired location
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @param upload_request : FileUploadRequest object, contains the value of destination directory in the server
-        @return returns a Response object containing the necessary details
-        @author oldgod
+        - **@brief** utility function for uploading a specified file to the desired location
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@param** upload_request : FileUploadRequest object, contains the value of destination directory in the server
+        - **@return** returns a Response object containing the necessary details
+        - **@author** oldgod
     '''
     info("Starting upload of file")
 
@@ -230,13 +230,13 @@ async def post_upload_file(request: Request, upload_request: FileUploadRequest =
 
 
 # test session services
-@app.post("/test/init-test")
-async def get_init_test(request: Request, test_request: InitTestRequest):
+@app.post("/test/init-test", tags=["test"])
+async def post_init_test(request: Request, test_request: InitTestRequest):
     '''
         - **@brief** async response function for initializing a test session
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return : returns a Response object containing the necessary details
-        @author oldgod
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** : returns a Response object containing the necessary details
+        - **@author** oldgod
     '''
     info("Initializing a test session")
     if len(session_mgr.uuid) != 0 and len(session_mgr.name) != 0:
@@ -282,8 +282,16 @@ async def get_init_test(request: Request, test_request: InitTestRequest):
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")
 
-@app.post("/test/clear-session/")
-async def get_clear_test_session(request: Request, test_request: EndTestRequest): 
+@app.post("/test/clear-session/", tags=["test"])
+async def post_clear_test_session(request: Request, test_request: EndTestRequest): 
+    '''
+        - **@brief** async function for clearing a test session
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@param** test_request : EndTestRequest object, containing the UUID of the test session which needs to be invalidated
+        - **@return** returns a successful response if the UUID provided matches with the current active test session and the same is cleared/invalidted.
+                    else returns a failure response
+    '''
+    # fixme: add the proper documentation string for this function
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")
