@@ -143,25 +143,25 @@ async def get_installed_browsers(request: Request):
             uuid="", name=session_mgr.name, 
             ip = request.client[0] if request.client else "")
 
-@app.get("/utils/list-test-types")
+@app.get("/utils/list-test-types", tags=["utils"])
 async def get_test_types_supported(request: Request):
     '''
         - **@brief** async response function returning the list of test types supported by the platform
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return returns a Response object containing the necessary details
-        @author oldgod
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object containing the necessary details
+        - **@author** oldgod
     '''
     info("Returning the list of Test Types")
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message="List of Test Types : UI, SHELL, MISC", 
             uuid="", name="", ip=request.client[0] if request.client else "")
 
-@app.get("/utils/system-details")
+@app.get("/utils/system-details", tags=["utils"])
 async def get_system_details(request: Request):
     '''
         - **@brief** function to get the system details - architecture, software version, OS version and the like
-        @param request : fastapi.Request object, automatically taken when this endpoint is hit
-        @return returns a Response object containing the system details
-        @author oldgod
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object containing the system details
+        - **@author** oldgod
     '''
     info("Getting the system details")
 
