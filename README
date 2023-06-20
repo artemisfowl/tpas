@@ -5,9 +5,13 @@ Todo:
   - Add the capacity to start a basic service in order to check the status of the services.
 
 Enhancement features:
+
+ To be done:
  - Allow for LunarVim or VScode for easy integration into the software.
  - Allow for easy configuration of modules using INI files
- - Allow for getting the list of browsers installed(cross-platform implementation - Mac, Windows as well as Linux) [done]
+
+ Completed:
+ - Allow for getting the list of browsers installed(cross-platform implementation - Mac, Windows as well as Linux)
 
 Coding and Commenting Style:
   - Always use snake_case as opposed to camelCase.
