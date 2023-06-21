@@ -102,7 +102,6 @@ async def get_module_version(request: Request):
             uuid="", name="", 
             ip=request.client[0] if request.client else "")
 
-# admin services { will be added here later }
 @app.post("/admin/clearall", tags=["admin"])
 async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
     '''
@@ -136,7 +135,7 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
                 message="Admin username and password not matching",
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
-# utility services
+
 @app.get("/utils/list-browsers", tags=["utils"], deprecated=True)
 async def get_installed_browsers(request: Request):
     '''
