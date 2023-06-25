@@ -9,7 +9,6 @@ from pathlib import Path
 from psutil import process_iter
 
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 from .model import SessionManager
@@ -51,17 +50,22 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
                             if not session_mgr.driver:
                                 # fixme: update the browser binary location and the geckodriver executable path
-                                session_mgr.driver = webdriver.Firefox(firefox_binary="browser_binary_location", firefox_profile=FirefoxProfile(),
-                                        executable_path="geckodriver executable path", 
-                                        service_args=["--marionette-port", "2828"])
+                                for browser_details in session_mgr.browser:
+                                    if browser_details.get("browser_type") == DEFAULT_BROWSER: 
+                                        session_mgr.driver = webdriver.Firefox(firefox_binary=browser_details.get("install_path"), firefox_profile=FirefoxProfile(),
+                                                executable_path=final_driver_location, 
+                                                service_args=["--marionette-port", "2828", "--connect-existing"])
                         else:
+                            # issue update: moving default browser from firefox to google-chrome
                             # fixme: add code for connecting to new instance
                             debug(f"Process names : {process.name()}, executable : {process.exe()} in normal mode")
                             if not session_mgr.driver:
                                 # fixme: update the browser binary location and the geckodriver executable path
-                                session_mgr.driver = webdriver.Firefox(firefox_binary="browser_binary_location", firefox_profile=FirefoxProfile(),
-                                        executable_path="geckodriver executable path", 
-                                        service_args=["--marionette-port", "2828", "--connect-existing"])
+                                for browser_details in session_mgr.browser:
+                                    if browser_details.get("browser_type") == DEFAULT_BROWSER:
+                                        session_mgr.driver = webdriver.Firefox(firefox_binary=browser_details.get("install_path"), firefox_profile=FirefoxProfile(),
+                                                executable_path=final_driver_location, 
+                                                service_args=["--marionette-port", "2828"])
 
                             # connect to existing session
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
