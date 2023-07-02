@@ -330,6 +330,10 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
     session_mgr.uuid = str()
     session_mgr.name = str()
     debug("Returning the proper updated response")
+
+    if session_mgr.driver:
+        session_mgr.driver.close()
+        session_mgr.driver = None
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test session with UUID : {test_request.uuid} cleared", 
             uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")

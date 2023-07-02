@@ -57,7 +57,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                                                 options=options)
                 else:
                     info("Starting default web browser in nomal mode")
-                    debug(f"Process names : {process.name()}, executable : {process.exe()} in normal mode")
                     if not session_mgr.driver:
                         for browser_details in session_mgr.browser:
                             if browser_details.get("browser_type") == DEFAULT_BROWSER:
