@@ -9,7 +9,7 @@ from pathlib import Path
 from psutil import process_iter
 
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.chrome.options import Options
 
 from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
@@ -42,32 +42,29 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
 
             if Path(final_driver_location).is_file():
                 debug("Web driver binary file found")
+                # this portion checks if the instance is already open
                 for process in process_iter():
                     if DEFAULT_BROWSER in process.name():
                         if DEFAULT_BROWSER_REMOTE_CONTROL_MODE in process.cmdline():
-                            # fixme: add code for connecting to existing remote control mode instance
                             debug(f"Process names : {process.name()}, executable : {process.exe()} in remote control mode")
 
                             if not session_mgr.driver:
-                                # fixme: update the browser binary location and the geckodriver executable path
                                 for browser_details in session_mgr.browser:
                                     if browser_details.get("browser_type") == DEFAULT_BROWSER: 
-                                        session_mgr.driver = webdriver.Firefox(firefox_binary=browser_details.get("install_path"), firefox_profile=FirefoxProfile(),
-                                                executable_path=final_driver_location, 
-                                                service_args=["--marionette-port", "2828", "--connect-existing"])
-                        else:
-                            # issue update: moving default browser from firefox to google-chrome
-                            # fixme: add code for connecting to new instance
-                            debug(f"Process names : {process.name()}, executable : {process.exe()} in normal mode")
-                            if not session_mgr.driver:
-                                # fixme: update the browser binary location and the geckodriver executable path
-                                for browser_details in session_mgr.browser:
-                                    if browser_details.get("browser_type") == DEFAULT_BROWSER:
-                                        session_mgr.driver = webdriver.Firefox(firefox_binary=browser_details.get("install_path"), firefox_profile=FirefoxProfile(),
-                                                executable_path=final_driver_location, 
-                                                service_args=["--marionette-port", "2828"])
+                                        options = Options()
+                                        options.add_experimental_option("debuggerAddress", "127.0.0.1:1559")
+                                        session_mgr.driver = webdriver.Chrome(executable_path=final_driver_location, 
+                                                options=options)
+                else:
+                    info("Starting default web browser in nomal mode")
+                    debug(f"Process names : {process.name()}, executable : {process.exe()} in normal mode")
+                    if not session_mgr.driver:
+                        for browser_details in session_mgr.browser:
+                            if browser_details.get("browser_type") == DEFAULT_BROWSER:
+                                session_mgr.driver = webdriver.Chrome(executable_path=final_driver_location)
 
-                            # connect to existing session
+                    session_mgr.driver.get("https://www.google.com")
+
                 # fixme: add the code for creating a webdriver session based on the parameters provided in the request
                 # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
                 # design: how the latching can also be done for the browser - default as well as configured
