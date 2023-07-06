@@ -45,14 +45,15 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                 # this portion checks if the instance is already open
                 for process in process_iter():
                     if DEFAULT_BROWSER in process.name():
-                        if DEFAULT_BROWSER_REMOTE_CONTROL_MODE in process.cmdline():
-                            debug(f"Process names : {process.name()}, executable : {process.exe()} in remote control mode")
+                        if any(DEFAULT_BROWSER_REMOTE_CONTROL_MODE in cmd for cmd in process.cmdline()):
+                            cmd = [s for s in process.cmdline() if DEFAULT_BROWSER_REMOTE_CONTROL_MODE in s][0]
 
                             if not session_mgr.driver:
                                 for browser_details in session_mgr.browser:
                                     if browser_details.get("browser_type") == DEFAULT_BROWSER: 
                                         options = Options()
-                                        options.add_experimental_option("debuggerAddress", "127.0.0.1:1559")
+                                        # fixme: update the code so that the strings are not present here
+                                        options.add_experimental_option("debuggerAddress", f"127.0.0.1:{int(cmd[cmd.index('=')+1:])}")
                                         session_mgr.driver = webdriver.Chrome(executable_path=final_driver_location, 
                                                 options=options)
                 else:
@@ -61,12 +62,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                         for browser_details in session_mgr.browser:
                             if browser_details.get("browser_type") == DEFAULT_BROWSER:
                                 session_mgr.driver = webdriver.Chrome(executable_path=final_driver_location)
-
-                    session_mgr.driver.get("https://www.google.com")
-
-                # fixme: add the code for creating a webdriver session based on the parameters provided in the request
-                # fixme: add the code for creating the driver based on the installed browser and update the same in the session manager
-                # design: how the latching can also be done for the browser - default as well as configured
             else:
                 warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint in services/driver location")
                 return EXIT_FAILURE
