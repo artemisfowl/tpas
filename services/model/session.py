@@ -29,6 +29,26 @@ class SessionManager:
         self.driver = None
         self.shell = None
 
+        self.ui_element = None
+        self.ui_elements = []
+
+    # fixme: add the right documentation strings for the properties
+    @property
+    def ui_element(self):
+        return self._ui_element
+
+    @ui_element.setter
+    def ui_element(self, value: Any):
+        self._ui_element = value
+
+    @property
+    def ui_elements(self):
+        return self._ui_elements
+
+    @ui_elements.setter
+    def ui_elements(self, value: list):
+        self._ui_elements = value
+
     @property
     def shell(self):
         return self._shell

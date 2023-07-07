@@ -10,9 +10,31 @@ from psutil import process_iter
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
+from .constants import UiActionType
+
+def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str) -> int:
+    if not session_mgr and not by and not locator and not action:
+        return EXIT_FAILURE
+
+    match by.lower():
+        case "id":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.ID, locator)
+        case "css selector":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.CSS_SELECTOR, locator)
+        case _:
+            return EXIT_FAILURE
+
+    match action.upper():
+        case UiActionType.CLICK.name:
+            session_mgr.ui_element.click()
+        case UiActionType.TYPE.name:
+            session_mgr.ui_element.send_keys("speedtest")
+
+    return EXIT_SUCCESS
 
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''

@@ -38,3 +38,15 @@ class AdminRequest(BaseModel):
     # required values
     admin_user: str
     admin_password: str
+
+    # optional values [tobe added later]
+
+class UiRequest(BaseModel):
+    # required values
+    uuid: str
+
+    # optional values
+    by: str = ""
+    locator: str = ""
+    url: str = ""
+    action: str = ""

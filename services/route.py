@@ -13,16 +13,16 @@ from json import dumps
 
 from fastapi import FastAPI, Request, File, UploadFile, Depends
 from browsers import browsers
-
+from selenium.webdriver.common.by import By
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest
+from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest, UiRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY, EXIT_FAILURE
 from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
 
 # fixme: add more functions to mangler and reduce the number of LoC in the route file
-from .mangler import create_ui_test_session_resources
+from .mangler import create_ui_test_session_resources, perform_operation
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -317,7 +317,6 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
         - **@return** returns a successful response if the UUID provided matches with the current active test session and the same is cleared/invalidted.
                     else returns a failure response
     '''
-    # fixme: add the proper documentation string for this function
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
         warn("Requested UUID is not in session, please check the UUID again and then clear the test session")
@@ -336,4 +335,69 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
         session_mgr.driver = None
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Test session with UUID : {test_request.uuid} cleared", 
             uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
+
+@app.post("/ui/navigate", tags=["ui"])
+async def post_navigate_to(request: Request, test_request: UiRequest):
+    # fixme: add documentation string for this function
+    info("Navigating to the specified URL")
+    if session_mgr.uuid != test_request.uuid:
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Inavlid UUID provided", uuid="", name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
+
+    if len(test_request.url) == 0:
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message=f"Invalid URL to navigate to", uuid=session_mgr.uuid, name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
+
+    debug(f"Navigating to : {test_request.url}")
+    session_mgr.driver.get(test_request.url)
+
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS,
+            message=f"Navigation to URL : {test_request.url} successful", uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
+
+@app.post("/ui/find-element", tags=["ui"])
+async def post_find_element(request: Request, test_request: UiRequest):
+    # fixme: add proper documentation string for this function
+    info("Trying to find the element specified")
+    if session_mgr.uuid != test_request.uuid:
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Inavlid UUID provided", uuid="", name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
+
+    debug(f"Finding element with locator : {test_request.locator} by {test_request.by}")
+    match test_request.by.lower():
+        case "id":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.ID, test_request.locator)
+        case "css selector":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.CSS_SELECTOR, test_request.locator)
+        case _:
+            return update_test_response(test_response=test_response, code=ResponseCode.FAILURE,
+                    message=f"Unknown location technique specified : {test_request.by}",
+                    uuid=session_mgr.uuid, name=session_mgr.name, 
+                    ip=request.client[0] if request.client else "")
+
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"Element found : {session_mgr.ui_element.text}", uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
+
+@app.post("/ui/perform-operation", tags=["ui"])
+async def post_perform_operation(request: Request, test_request: UiRequest):
+    info("Performing operation on element")
+    if session_mgr.uuid != test_request.uuid:
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="Inavlid UUID provided", uuid="", name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
+
+    debug(f"Performing operation : {test_request.action} on element of type : {test_request.locator} to be found by : {test_request.by}")
+    if perform_operation(session_mgr=session_mgr, by=test_request.by, locator=test_request.locator, action=test_request.action) == EXIT_FAILURE:
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message=f"Unable to perform operation : {test_request.action} on element of type : {test_request.locator} to be found by : {test_request.by}",
+                uuid=session_mgr.uuid, name=session_mgr.name, 
+                ip=request.client[0] if request.client else "")
+
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message="Performed operation: {}", uuid=session_mgr.uuid, name=session_mgr.name, 
             ip=request.client[0] if request.client else "")

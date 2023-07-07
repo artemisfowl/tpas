@@ -19,11 +19,21 @@ DEFAULT_BROWSER_REMOTE_CONTROL_MODE = "--remote-debugging-port"
 DEFAULT_ADMIN_USER = "oldgod"
 DEFAULT_ADMIN_PASSWORD = "oldgod"
 
+# fixme: add proper documentation strings for enum constants
 class TestType(Enum):
     UI = 100
     SHELL = 200
     MISC = 300
     NONE = 1000
+
+class UiActionType(Enum):
+    CLICK = 10              # CLICK and LEFT_CLICK are basically the same
+    LEFT_CLICK = 100        # this is just an overzealous identification
+    RIGHT_CLICK = 200
+    MIDDLE_CLICK = 300
+    DRAG_N_DROP = 400
+    SCROLL = 500
+    TYPE = 600
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = -1
