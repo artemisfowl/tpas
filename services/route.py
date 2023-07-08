@@ -16,7 +16,7 @@ from browsers import browsers
 from selenium.webdriver.common.by import By
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest, UiRequest
+from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest, UiRequest, NavigationRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY, EXIT_FAILURE
 from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
@@ -338,7 +338,7 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
             ip=request.client[0] if request.client else "")
 
 @app.post("/ui/navigate", tags=["ui"])
-async def post_navigate_to(request: Request, test_request: UiRequest):
+async def post_navigate_to(request: Request, test_request: NavigationRequest):
     # fixme: add documentation string for this function
     info("Navigating to the specified URL")
     if session_mgr.uuid != test_request.uuid:

@@ -41,6 +41,14 @@ class AdminRequest(BaseModel):
 
     # optional values [tobe added later]
 
+class NavigationRequest(BaseModel):
+    # required values
+    uuid: str
+    url: str
+
+    # optional values
+    open_in_new_tab: bool = False
+
 class UiRequest(BaseModel):
     # required values
     uuid: str
