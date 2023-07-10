@@ -89,9 +89,9 @@ def run_module(module_name: str, modules: dict):
                 debug("Service module will be started")
 
                 if root.level == DEBUG:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False, log_config=None) # type: ignore
                 else:
-                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False) # type: ignore
+                    uvrun(f"{module_name}:app", host=host, port=port, workers=workers, reload=False, log_config=None) # type: ignore
 
         case _:
             error(f"Unknown module : {module_name} specifed to be started")

@@ -49,6 +49,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     info("Starting to create the test session")
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
+
     config = session_mgr.config.get("config")
     if config:
         if not config.get("browser"): # default browser handling
