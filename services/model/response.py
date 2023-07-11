@@ -54,6 +54,15 @@ class TestResponse(Response):
         super().__init__(code, message, ip)
         self.uuid = None # type: ignore
         self.name = ""
+        self.obj = {}
+
+    @property
+    def obj(self):
+        return self._obj
+
+    @obj.setter
+    def obj(self, value: dict):
+        self._obj = value
 
     @property
     def name(self):
