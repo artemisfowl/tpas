@@ -50,7 +50,7 @@ class TestResponse(Response):
         @brief class containing the response details when a test session is initialized
         @author oldgod
     '''
-    def __init__(self, code: int, message: str, ip: str = "") -> None:
+    def __init__(self, code: int, message: str = "", ip: str = "") -> None:
         super().__init__(code, message, ip)
         self.uuid = None # type: ignore
         self.name = ""

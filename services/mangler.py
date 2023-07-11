@@ -17,24 +17,61 @@ from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRI
 from .constants import UiActionType
 
 def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str) -> int:
+    # fixme: add the proper documentation string for this function
     if not session_mgr and not by and not locator and not action:
         return EXIT_FAILURE
+
+    info("Locating the element mentioned")
+    debug(f"Locating the element by : {by} with locator : {locator}")
 
     match by.lower():
         case "id":
             session_mgr.ui_element = session_mgr.driver.find_element(By.ID, locator)
+        case "name":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.NAME, locator)
+        case "xpath":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.XPATH, locator)
+        case "link text":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.LINK_TEXT, locator)
+        case "partial link text":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.PARTIAL_LINK_TEXT, locator)
+        case "tag name":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.TAG_NAME, locator)
+        case "class name":
+            session_mgr.ui_element = session_mgr.driver.find_element(By.CLASS_NAME, locator)
         case "css selector":
             session_mgr.ui_element = session_mgr.driver.find_element(By.CSS_SELECTOR, locator)
         case _:
             return EXIT_FAILURE
 
+    debug(f"About to perform action: {action} on the element")
     match action.upper():
         case UiActionType.CLICK.name:
             session_mgr.ui_element.click()
+        case UiActionType.LEFT_CLICK.name:
+            session_mgr.ui_element.click()
+        case UiActionType.RIGHT_CLICK.name:
+            # fixme: add the code for moving the identified element to view and then RIGHT CLICKING on it
+            pass
+        case UiActionType.MIDDLE_CLICK.name:
+            # fixme: add the code for performing the action on MIDDLE MOUSE BUTTON click
+            pass
+        case UiActionType.DRAG_N_DROP.name:
+            # fixme: add the code for performing the action on DRAG and DROP
+            pass
+        case UiActionType.SCROLL.name:
+            # fixme: add the code for performing the action on SCROLL
+            pass
         case UiActionType.TYPE.name:
+            # fixme: change the parameters of the function to accept the value to be sent to the element identified
             session_mgr.ui_element.send_keys("speedtest")
 
     return EXIT_SUCCESS
+
+def get_supported_ui_actions() -> dict:
+    info("Checking supported UI Actions")
+    debug(f"Returning supported UI actions : {UiActionType._member_names_}")
+    return UiActionType.__dict__
 
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
@@ -49,7 +86,6 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     info("Starting to create the test session")
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
-
     config = session_mgr.config.get("config")
     if config:
         if not config.get("browser"): # default browser handling

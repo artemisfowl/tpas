@@ -22,7 +22,7 @@ from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
 
 # fixme: add more functions to mangler and reduce the number of LoC in the route file
-from .mangler import create_ui_test_session_resources, perform_operation
+from .mangler import create_ui_test_session_resources, perform_operation, get_supported_ui_actions
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -97,10 +97,12 @@ async def get_module_version(request: Request):
                 uuid="", name="", 
                 ip=request.client[0] if request.client else "")
 
+    # fixme: add the version number in the obj
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
-            message=f"Version number : {version_number}",
+            message=f"Version number updated in the obj attribute",
             uuid="", name="", 
-            ip=request.client[0] if request.client else "")
+            ip=request.client[0] if request.client else "", 
+            module_version_no=version_number)
 
 @app.post("/admin/clearall", tags=["admin"])
 async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
@@ -117,13 +119,20 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
 
     if test_request.admin_user == DEFAULT_ADMIN_USER:
         if test_request.admin_password == DEFAULT_ADMIN_PASSWORD:
+            uuid_tmp = session_mgr.uuid
+            name_tmp = session_mgr.name
             session_mgr.uuid = ""
             session_mgr.name = ""
 
-            debug("Test session clear succesful, returning the updated response")
+            if session_mgr.driver:
+                session_mgr.driver.close()
+                session_mgr.driver = None
+
+            debug("Test session clear succesfull, returning the updated response")
             return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
                     message="Test session invalidated", 
-                    uuid="", name="", ip=request.client[0] if request.client else "")
+                    uuid="", name="", ip=request.client[0] if request.client else "",
+                    invalidated_test_session_details={"uuid": uuid_tmp, "name": name_tmp})
         else:
             warn("Admin user is not recognized, username/password might be incorrect")
             return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
@@ -162,12 +171,15 @@ async def get_installed_browsers(request: Request):
 
     if len(lsbrowsers) == 0:
         warn("No known browsers are installed in the system")
-        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, message="No known browsers installed", 
-                uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+                message="No known browsers installed", 
+                uuid="", name="", ip=request.client[0] if request.client else "")
 
-    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"List of browsers found : {lbrowsers}", 
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message="Installed browser details updated, check obj", 
             uuid="", name=session_mgr.name, 
-            ip = request.client[0] if request.client else "")
+            ip = request.client[0] if request.client else "",
+            installed_browser_list=lbrowsers)
 
 @app.get("/utils/list-test-types", tags=["utils"])
 async def get_test_types_supported(request: Request):
@@ -206,6 +218,15 @@ async def get_system_details(request: Request):
             uuid="", name="",
             ip=request.client[0] if request.client else "")
     return rval
+
+@app.get("/utils/locator-techniques", tags=["utils"])
+async def get_locator_techniques(request: Request):
+    # fixme: add the proper documentation string for this function
+    # fixme: add the provision in the test_response to send out a dictionary containing miscellaneous details
+    get_supported_ui_actions() # fixme: add the necessary code in order to parse the output
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message="Locator techniques are as follows", 
+            uuid="", name="", ip = request.client[0] if request.client else "")
 
 @app.post("/utils/upload-file/", tags=["utils"])
 async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):

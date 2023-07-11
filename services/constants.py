@@ -27,13 +27,13 @@ class TestType(Enum):
     NONE = 1000
 
 class UiActionType(Enum):
-    CLICK = 10              # CLICK and LEFT_CLICK are basically the same
-    LEFT_CLICK = 100        # this is just an overzealous identification
-    RIGHT_CLICK = 200
-    MIDDLE_CLICK = 300
-    DRAG_N_DROP = 400
-    SCROLL = 500
-    TYPE = 600
+    CLICK = 'CLICK'                  # CLICK and LEFT_CLICK are basically the same
+    LEFT_CLICK = 'LEFT_CLICK'        # this is just an overzealous identification
+    RIGHT_CLICK = 'RIGHT_CLICK'
+    MIDDLE_CLICK = 'MIDDLE_CLICK'
+    DRAG_N_DROP = 'DRAG_N_DROP'
+    SCROLL = 'SCROLL'
+    TYPE = 'TYPE'
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = -1
