@@ -223,10 +223,10 @@ async def get_system_details(request: Request):
 async def get_locator_techniques(request: Request):
     # fixme: add the proper documentation string for this function
     # fixme: add the provision in the test_response to send out a dictionary containing miscellaneous details
-    get_supported_ui_actions() # fixme: add the necessary code in order to parse the output
+    debug(f"ui_actions : {get_supported_ui_actions()}")
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message="Locator techniques are as follows", 
-            uuid="", name="", ip = request.client[0] if request.client else "")
+            uuid="", name="", ip = request.client[0] if request.client else "", ui_actions=get_supported_ui_actions())
 
 @app.post("/utils/upload-file/", tags=["utils"])
 async def post_upload_file(request: Request, upload_request: FileUploadRequest = Depends(), file: UploadFile = File(...)):

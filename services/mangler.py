@@ -51,16 +51,16 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
         case UiActionType.LEFT_CLICK.name:
             session_mgr.ui_element.click()
         case UiActionType.RIGHT_CLICK.name:
-            # fixme: add the code for moving the identified element to view and then RIGHT CLICKING on it
+            # fixme: add the code for moving the identified element to view and then RIGHT CLICKING on it, perform the operations using pynput
             pass
         case UiActionType.MIDDLE_CLICK.name:
-            # fixme: add the code for performing the action on MIDDLE MOUSE BUTTON click
+            # fixme: add the code for performing the action on MIDDLE MOUSE BUTTON click, perform the operations using pynput
             pass
         case UiActionType.DRAG_N_DROP.name:
-            # fixme: add the code for performing the action on DRAG and DROP
+            # fixme: add the code for performing the action on DRAG and DROP, perform the operations using pynput
             pass
         case UiActionType.SCROLL.name:
-            # fixme: add the code for performing the action on SCROLL
+            # fixme: add the code for performing the action on SCROLL, perform the fallback operation using pynput
             pass
         case UiActionType.TYPE.name:
             # fixme: change the parameters of the function to accept the value to be sent to the element identified
@@ -68,10 +68,10 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
 
     return EXIT_SUCCESS
 
-def get_supported_ui_actions() -> dict:
+def get_supported_ui_actions() -> list:
     info("Checking supported UI Actions")
     debug(f"Returning supported UI actions : {UiActionType._member_names_}")
-    return UiActionType.__dict__
+    return UiActionType._member_names_
 
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
