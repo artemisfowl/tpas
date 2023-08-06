@@ -221,9 +221,12 @@ async def get_system_details(request: Request):
 
 @app.get("/utils/locator-techniques", tags=["utils"])
 async def get_locator_techniques(request: Request):
-    # fixme: add the proper documentation string for this function
-    # fixme: add the provision in the test_response to send out a dictionary containing miscellaneous details
-    debug(f"ui_actions : {get_supported_ui_actions()}")
+    '''
+        - **@brief** utility function for listing out the ways with which an element can be located
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@return** returns a Response object containing the necessary details
+        - **@author** oldgod
+    '''
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message="Locator techniques are as follows", 
             uuid="", name="", ip = request.client[0] if request.client else "", ui_actions=get_supported_ui_actions())
@@ -337,6 +340,7 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
         - **@param** test_request : EndTestRequest object, containing the UUID of the test session which needs to be invalidated
         - **@return** returns a successful response if the UUID provided matches with the current active test session and the same is cleared/invalidted.
                     else returns a failure response
+        - **@author** oldgod
     '''
     info(f"About to clear session running with UUID : {test_request.uuid}")
     if session_mgr.uuid != test_request.uuid:
@@ -360,6 +364,13 @@ async def post_clear_test_session(request: Request, test_request: EndTestRequest
 
 @app.post("/ui/navigate", tags=["ui"])
 async def post_navigate_to(request: Request, test_request: NavigationRequest):
+    '''
+        - **@brief** async function for navigating to a specified URL
+        - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
+        - **@param** test_request : NavigationRequest object, containing the UUID of the test session, the URL which needs to be navigated to
+                     Also contains an optional boolean value in case the URL needs to eb opened ina new tab
+        - **@author** oldgod
+    '''
     # fixme: add documentation string for this function
     info("Navigating to the specified URL")
     if session_mgr.uuid != test_request.uuid:

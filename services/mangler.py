@@ -69,6 +69,7 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
     return EXIT_SUCCESS
 
 def get_supported_ui_actions() -> list:
+    # fixme: add proper documentation for this function
     info("Checking supported UI Actions")
     debug(f"Returning supported UI actions : {UiActionType._member_names_}")
     return UiActionType._member_names_
