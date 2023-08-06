@@ -97,7 +97,6 @@ async def get_module_version(request: Request):
                 uuid="", name="", 
                 ip=request.client[0] if request.client else "")
 
-    # fixme: add the version number in the obj
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message=f"Version number updated in the obj attribute",
             uuid="", name="", 
@@ -227,7 +226,6 @@ async def get_supported_user_actions(request: Request):
         - **@return** returns a Response object containing the necessary details
         - **@author** oldgod
     '''
-    # fixme: correct the endpoint name, this is showing the actions supported
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message="Locator techniques are as follows", 
             uuid="", name="", ip = request.client[0] if request.client else "", ui_actions=get_supported_ui_actions())
