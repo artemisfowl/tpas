@@ -17,7 +17,17 @@ from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRI
 from .constants import UiActionType
 
 def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str) -> int:
-    # fixme: add the proper documentation string for this function
+    '''
+        @brief function to perform a specified operation
+        @param session_mgr: SessionManager object containing the details of the test session
+        @param by: Enum containing the various ways with which an element could be identified
+        @param locator: str containing the locator to be used in order to find the element
+        @param action: str containing the type of action to be performed on the identified element
+        @return returns an integer; -1 on failure, 0 on success
+        @author oldgod
+
+        @note There are certain portions of the implementation which are left out, they need to be implemented
+    '''
     if not session_mgr and not by and not locator and not action:
         return EXIT_FAILURE
 
@@ -69,7 +79,11 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
     return EXIT_SUCCESS
 
 def get_supported_ui_actions() -> list:
-    # fixme: add proper documentation for this function
+    '''
+        @brief function to return the list of UI actions supported
+        @return returns a list containing the actions which are supported
+        @author oldgod
+    '''
     info("Checking supported UI Actions")
     debug(f"Returning supported UI actions : {UiActionType._member_names_}")
     return UiActionType._member_names_
@@ -77,8 +91,8 @@ def get_supported_ui_actions() -> list:
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
         @brief function to create ui test resource.
-        @author oldgod
         @return Returns an integer, 0 when opertion is successfull else -1
+        @author oldgod
     '''
     if not isinstance(session_mgr, SessionManager):
         warn("Session instance not provided, returning control to calling function")
