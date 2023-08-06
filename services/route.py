@@ -219,14 +219,15 @@ async def get_system_details(request: Request):
             ip=request.client[0] if request.client else "")
     return rval
 
-@app.get("/utils/locator-techniques", tags=["utils"])
-async def get_locator_techniques(request: Request):
+@app.get("/utils/supported-user-actions", tags=["utils"])
+async def get_supported_user_actions(request: Request):
     '''
         - **@brief** utility function for listing out the ways with which an element can be located
         - **@param** request : fastapi.Request object, automatically taken when this endpoint is hit
         - **@return** returns a Response object containing the necessary details
         - **@author** oldgod
     '''
+    # fixme: correct the endpoint name, this is showing the actions supported
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
             message="Locator techniques are as follows", 
             uuid="", name="", ip = request.client[0] if request.client else "", ui_actions=get_supported_ui_actions())

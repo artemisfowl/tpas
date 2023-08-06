@@ -16,13 +16,14 @@ from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 from .constants import UiActionType
 
-def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str) -> int:
+def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str, value: str="") -> int:
     '''
         @brief function to perform a specified operation
         @param session_mgr: SessionManager object containing the details of the test session
         @param by: Enum containing the various ways with which an element could be identified
         @param locator: str containing the locator to be used in order to find the element
         @param action: str containing the type of action to be performed on the identified element
+        @param value: str containing the value to be sent to the identified element [this is only to be provided if the action is to type something]
         @return returns an integer; -1 on failure, 0 on success
         @author oldgod
 
@@ -62,6 +63,7 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
             session_mgr.ui_element.click()
         case UiActionType.RIGHT_CLICK.name:
             # fixme: add the code for moving the identified element to view and then RIGHT CLICKING on it, perform the operations using pynput
+            # performing the right click might be a bit tricky, so, in order to do that, we will be using pynput
             pass
         case UiActionType.MIDDLE_CLICK.name:
             # fixme: add the code for performing the action on MIDDLE MOUSE BUTTON click, perform the operations using pynput
@@ -73,8 +75,8 @@ def perform_operation(session_mgr: SessionManager, by: str, locator: str, action
             # fixme: add the code for performing the action on SCROLL, perform the fallback operation using pynput
             pass
         case UiActionType.TYPE.name:
-            # fixme: change the parameters of the function to accept the value to be sent to the element identified
-            session_mgr.ui_element.send_keys("speedtest")
+            if len(value) > 0:
+                session_mgr.ui_element.send_keys(value)
 
     return EXIT_SUCCESS
 
