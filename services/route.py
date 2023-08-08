@@ -38,7 +38,7 @@ g_final_driver_location = f"{g_module_directory_path}{DEFAULT_DRIVER_BINARY}"
 debug(f"Creating driver binary directory path : {g_final_driver_location[:g_final_driver_location.rfind(sep)]}")
 makedirs(g_final_driver_location[:g_final_driver_location.rfind(sep)], exist_ok=True)
 
-# root services
+# module specific services
 @app.get("/", tags=["module"])
 async def get_root(request: Request):
     '''
@@ -103,6 +103,7 @@ async def get_module_version(request: Request):
             ip=request.client[0] if request.client else "", 
             module_version_no=version_number)
 
+# admin related services
 @app.post("/admin/clearall", tags=["admin"])
 async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
     '''
@@ -143,7 +144,7 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
                 message="Admin username and password not matching",
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
-
+# utils related services
 @app.get("/utils/list-browsers", tags=["utils"], deprecated=True)
 async def get_installed_browsers(request: Request):
     '''

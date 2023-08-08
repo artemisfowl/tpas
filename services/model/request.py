@@ -58,3 +58,4 @@ class UiRequest(BaseModel):
     locator: str = ""
     url: str = ""
     action: str = ""
+    value: str = ""
