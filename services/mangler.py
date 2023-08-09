@@ -3,10 +3,12 @@
     @author oldgod
 '''
 
-from logging import info, debug, warn
+from typing import Union
+from logging import info, debug, warn, error
 from os import sep
 from pathlib import Path
 from psutil import process_iter
+from platform import system, release, version as platform_version
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -15,6 +17,30 @@ from selenium.webdriver.common.by import By
 from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 from .constants import UiActionType
+
+def prepare_system_details(browser_list: list) -> dict:
+    '''
+        @brief function to prepare the system details
+        @param browser_list: List containing the installed browser details
+        @return returns a dictionary containing the system details
+        @author oldgod
+
+        @note This function will throw an exception is the list of installed browsers are not provided to it.
+    '''
+    system_details = {}
+
+    # fixme: add a message to the test response which will be returned
+    if not isinstance(browser_list, list):
+        error(f"Installed Browser details should be a list, found {type(browser_list)}")
+    elif len(browser_list) == 0:
+        warn(f"No browsers were detected installed in the system, kindly contact system administrator to install a browser")
+    
+    system_details["os_type"] = system()
+    system_details["os_release"] = release()
+    system_details["os_release_version"] = platform_version()
+    system_details["browsers"] = browser_list
+
+    return system_details
 
 def perform_operation(session_mgr: SessionManager, by: str, locator: str, action: str, value: str="") -> int:
     '''

@@ -22,7 +22,7 @@ from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
 
 # fixme: add more functions to mangler and reduce the number of LoC in the route file
-from .mangler import create_ui_test_session_resources, perform_operation, get_supported_ui_actions
+from .mangler import create_ui_test_session_resources, perform_operation, get_supported_ui_actions, prepare_system_details
 
 app = FastAPI()
 session_mgr = SessionManager()
@@ -64,7 +64,7 @@ async def get_service_status(request: Request):
     '''
     info("Serving status of services")
 
-    if len(session_mgr.uuid) > 0:
+    if len(session_mgr.uuid) > 0 and len(session_mgr.name) > 0:
         debug(f"Test session active, session name : {session_mgr.name}, session UUID : {session_mgr.uuid}")
         return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"Running Test : {session_mgr.name}", 
                 uuid="", name=session_mgr.name, 
@@ -116,6 +116,8 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
     info("Admin being called in order to clear all test sessions")
     debug(f"Admin credentials provided : user -> {test_request.admin_user} and password -> {test_request.admin_password}")
     debug(f"Clearing of all sessions requested from : {request.client[0] if request.client else 'Unidentified'}")
+
+    # fixme: check if the number of lines of code can be reduced here
 
     if test_request.admin_user == DEFAULT_ADMIN_USER:
         if test_request.admin_password == DEFAULT_ADMIN_PASSWORD:
@@ -203,18 +205,13 @@ async def get_system_details(request: Request):
     '''
     info("Getting the system details")
 
-    # fixme: move the code to proper functions in mangler
-    system_details = {}
-    system_details["os_type"] = system()
-    system_details["os_release"] = release()
-    system_details["os_release_version"] = platform_version()
-    system_details["browsers"] = session_mgr.browser
+    system_details = prepare_system_details(browser_list=session_mgr.browser)
     debug(f"System Details : {dumps(system_details, indent=2)}")
 
     rval = {}
     rval["response"] = test_response.__dict__
     rval["system_details"] = system_details
-    rval["response"] = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"System details are as follows", 
+    rval["response"] = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"System details are as follows" if rval.get("system_details").get("browsers") else "Kindly check logs, browsers were not found", 
             uuid="", name="",
             ip=request.client[0] if request.client else "")
     return rval

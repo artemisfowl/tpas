@@ -10,7 +10,7 @@
 from typing import Any
 from browsers import browsers
 
-def update_test_response(test_response: Any, code: int, message: str, uuid: str, name: str="", ip: str="", *args, **kwargs):
+def update_test_response(test_response: Any, code: int, message: str, uuid: str, name: str="", ip: str="", **kwargs):
     '''
         @brief function to modify the test_response object based on the values provided
         @author oldgod
@@ -44,7 +44,7 @@ def update_test_response(test_response: Any, code: int, message: str, uuid: str,
 
     return test_response
 
-def find_installed_browsers():
+def find_installed_browsers() -> list:
     '''
         @brief function to find the installed browsers
         @return returns a list containing all the details of the browsers installed 
