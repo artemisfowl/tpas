@@ -119,6 +119,7 @@ def get_supported_ui_actions() -> list:
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
         @brief function to create ui test resource.
+        @param session_mgr : SessionManager object containing the details of the test session that is being run
         @return Returns an integer, 0 when opertion is successfull else -1
         @author oldgod
     '''
@@ -168,8 +169,12 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                 warn("Web driver binary file not found, kindly upload the file using /utils/fileupload endpoint in services/driver location")
                 return EXIT_FAILURE
         else:
-            debug(f"Creating webdriver session for specified browser : {config.get('browser')}")
+            info(f"Creating webdriver session for specified browser : {config.get('browser')}")
             # fixme: add the code for creating the webdriver for the specified browser
-            pass
+
+            # if the driver path information is not provided in the configuration file, return failure
+            # the driver path has to be provided if the custom browser is mentioned
+            if not session_mgr.config.get("config").get("driver"): # type: ignore
+                return EXIT_FAILURE
 
     return EXIT_SUCCESS

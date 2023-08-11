@@ -211,9 +211,11 @@ async def get_system_details(request: Request):
     rval = {}
     rval["response"] = test_response.__dict__
     rval["system_details"] = system_details
-    rval["response"] = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, message=f"System details are as follows" if rval.get("system_details").get("browsers") else "Kindly check logs, browsers were not found", 
+    rval["response"] = update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
+            message=f"System details are as follows" if rval["system_details"].get("browsers") else "Kindly check logs, browsers were not found", 
             uuid="", name="",
             ip=request.client[0] if request.client else "")
+    debug(f"Final response : {rval}")
     return rval
 
 @app.get("/utils/supported-user-actions", tags=["utils"])
