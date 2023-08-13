@@ -7,6 +7,7 @@
     fileutils, but this file is created only for housing the orphaned functions for now. Kind of like __future__
 '''
 
+from os import access, X_OK
 from typing import Any
 from browsers import browsers
 from platform import system
@@ -84,7 +85,7 @@ def is_file_executable(executable_filepath: str) -> bool:
         case "linux":
             debug("Linux system detected")
             # fixme: add the code for performing the check if the file has executable permissions or not
+            return access(executable_filepath, X_OK)
         case _:
             warn("Unknown system detected, Linux is the only platform supported as of now")
-
-    return True
+            return False
