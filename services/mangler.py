@@ -17,6 +17,7 @@ from selenium.webdriver.common.by import By
 from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 from .constants import UiActionType
+from .utils import is_file_executable
 
 def prepare_system_details(browser_list: list) -> dict:
     '''
@@ -176,5 +177,8 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
             # the driver path has to be provided if the custom browser is mentioned
             if not session_mgr.config.get("config").get("driver"): # type: ignore
                 return EXIT_FAILURE
+            else:
+                # fixme: add the code for checking if the driver is a real driver file, as in the file is an executable or not
+                debug(f"Is driver file executable : {is_file_executable(session_mgr.config.get('config').get('driver'))}") # type: ignore
 
     return EXIT_SUCCESS

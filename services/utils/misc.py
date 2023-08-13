@@ -9,6 +9,8 @@
 
 from typing import Any
 from browsers import browsers
+from platform import system
+from logging import debug, warn # fixme: this is a temporary import, remove it and associated logging lines
 
 def update_test_response(test_response: Any, code: int, message: str, uuid: str, name: str="", ip: str="", **kwargs):
     '''
@@ -61,3 +63,28 @@ def find_installed_browsers() -> list:
         rlist.append(tmp)
 
     return rlist
+
+def is_file_executable(executable_filepath: str) -> bool:
+    '''
+        @brief function to check if the file specified by filepath is en executable or not
+        @param executable_filepath : str containing the absolute path to the executable file
+        @return returns a boolean value, True if the file pointed is an executable file, False if not
+        @author oldgod
+
+        @note as of now, only adding support for Linux type of operating systems
+    '''
+    if not executable_filepath:
+        return False
+    elif len(executable_filepath) == 0:
+        return False
+    elif not isinstance(executable_filepath, str):
+        return False
+
+    match system().lower():
+        case "linux":
+            debug("Linux system detected")
+            # fixme: add the code for performing the check if the file has executable permissions or not
+        case _:
+            warn("Unknown system detected, Linux is the only platform supported as of now")
+
+    return True
