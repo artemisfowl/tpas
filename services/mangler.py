@@ -5,7 +5,8 @@
 
 from typing import Union
 from logging import info, debug, warn, error
-from os import sep
+from os import sep, stat, chmod
+from stat import S_IEXEC
 from pathlib import Path
 from psutil import process_iter
 from platform import system, release, version as platform_version
@@ -17,7 +18,7 @@ from selenium.webdriver.common.by import By
 from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 from .constants import UiActionType
-from .utils import is_file_executable
+from .utils import is_file_executable, file_exists
 
 def prepare_system_details(browser_list: list) -> dict:
     '''
@@ -172,13 +173,16 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
         else:
             info(f"Creating webdriver session for specified browser : {config.get('browser')}")
             # fixme: add the code for creating the webdriver for the specified browser
-
-            # if the driver path information is not provided in the configuration file, return failure
-            # the driver path has to be provided if the custom browser is mentioned
             if not session_mgr.config.get("config").get("driver"): # type: ignore
                 return EXIT_FAILURE
             else:
-                # fixme: add the code for checking if the driver is a real driver file, as in the file is an executable or not
-                debug(f"Is driver file executable : {is_file_executable(session_mgr.config.get('config').get('driver'))}") # type: ignore
+                if file_exists(session_mgr.config.get('config')['driver']): # type: ignore
+                    debug("This means that the file exists, check if it has executable permissions")
+                    debug(f"Is driver file executable : {is_file_executable(session_mgr.config.get('config').get('driver'))}") # type: ignore
+                    if not is_file_executable(session_mgr.config.get('config')['driver']): # type: ignore
+                        chmod("session_mgr.config.get('config')['driver']", stat("session_mgr.config.get('config')['driver']").st_mode | S_IEXEC)
+
+                # fixme: now try to create the driver instance - this needs to be again performed with a match, 
+                # this is because each browser has its own way of creating the web driver instance
 
     return EXIT_SUCCESS

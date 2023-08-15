@@ -6,6 +6,7 @@
 from typing import Union
 from configparser import ConfigParser
 from logging import info, debug
+from pathlib import Path
 
 def read_module_config(configpath: str) -> Union[None, dict]:
     '''
@@ -27,3 +28,19 @@ def read_module_config(configpath: str) -> Union[None, dict]:
 
     debug("Returning the parser instance")
     return _parser.__dict__.get("_sections")
+
+def file_exists(filepath: str) -> bool:
+    '''
+        @brief function to check if the file specified by the filepath exists or not
+        @params filepath: String containing the filepath
+        @return returns a boolean value, True if the file exists, else False
+        @author oldgod
+
+        @note If the filepath is not a string or an empty string, 
+        the result will always be a False value
+    '''
+    if len(filepath) == 0:
+        return False
+    elif not isinstance(filepath, str):
+        return False
+    return Path(filepath).exists()
