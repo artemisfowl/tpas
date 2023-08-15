@@ -183,6 +183,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                         chmod("session_mgr.config.get('config')['driver']", stat("session_mgr.config.get('config')['driver']").st_mode | S_IEXEC)
 
                 # fixme: now try to create the driver instance - this needs to be again performed with a match, 
-                # this is because each browser has its own way of creating the web driver instance
+                # this is because each browser has its own way of creating the web driver instance - the creation of the instance should allow
+                # for injection of the web driver instance creation function
 
     return EXIT_SUCCESS
