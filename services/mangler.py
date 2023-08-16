@@ -19,6 +19,7 @@ from .model import SessionManager
 from .constants import (DEFAULT_BROWSER, EXIT_SUCCESS, EXIT_FAILURE, DEFAULT_DRIVER_BINARY, DEFAULT_BROWSER_REMOTE_CONTROL_MODE)
 from .constants import UiActionType
 from .utils import is_file_executable, file_exists
+from .utils.inject import *
 
 def prepare_system_details(browser_list: list) -> dict:
     '''
@@ -182,8 +183,13 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
                     if not is_file_executable(session_mgr.config.get('config')['driver']): # type: ignore
                         chmod("session_mgr.config.get('config')['driver']", stat("session_mgr.config.get('config')['driver']").st_mode | S_IEXEC)
 
-                # fixme: now try to create the driver instance - this needs to be again performed with a match, 
-                # this is because each browser has its own way of creating the web driver instance - the creation of the instance should allow
-                # for injection of the web driver instance creation function
+                # fixme: add the note here in order to specify how the injectable web driver functions could be written
+                injectable_functions = [function for function in globals().keys() if function.startswith('idriver')]
+                debug(f"Injectable functions : {injectable_functions}")
+
+                if f"idriver_{session_mgr.config.get('config')['browser']}" in injectable_functions: # type: ignore
+                    # get the function reference from globals context and then execute the function
+                    session_mgr.driver = globals().get(f"idriver_{session_mgr.config.get('config')['browser']}")( # type: ignore
+                            driver_path=session_mgr.config.get('config')['driver']) # type: ignore
 
     return EXIT_SUCCESS
