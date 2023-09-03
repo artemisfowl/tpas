@@ -3,7 +3,6 @@
     @author oldgod
 '''
 
-from typing import Union
 from logging import info, debug, warn, error
 from os import sep, stat, chmod
 from stat import S_IEXEC
@@ -119,6 +118,21 @@ def get_supported_ui_actions() -> list:
     debug(f"Returning supported UI actions : {UiActionType._member_names_}")
     return UiActionType._member_names_
 
+def create_shell_session_resources(session_mgr: SessionManager) -> int:
+    '''
+        @brief function to create shell test resource
+        @param session_mgr : SessionManager object containing the details of the test session that is being run
+        @return Returns an integer, 0 when opertion is successfull else -1
+        @author oldgod
+    '''
+    if not isinstance(session_mgr, SessionManager):
+        warn("Session instance not provided, returning control to calling function")
+        return EXIT_FAILURE
+
+    info("Starting to create the shell test session")
+
+    return EXIT_SUCCESS
+
 def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
     '''
         @brief function to create ui test resource.
@@ -130,7 +144,7 @@ def create_ui_test_session_resources(session_mgr: SessionManager) -> int:
         warn("Session instance not provided, returning control to calling function")
         return EXIT_FAILURE
 
-    info("Starting to create the test session")
+    info("Starting to create the UI test session")
 
     debug(f"Session Manager contents (post update) : {session_mgr.__dict__}")
     config = session_mgr.config.get("config")

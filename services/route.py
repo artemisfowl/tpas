@@ -8,7 +8,6 @@ from uuid import uuid4
 from logging import info, debug, warn, error
 from pathlib import Path
 from traceback import format_exc
-from platform import system, release, version as platform_version
 from json import dumps
 
 from fastapi import FastAPI, Request, File, UploadFile, Depends
@@ -370,7 +369,6 @@ async def post_navigate_to(request: Request, test_request: NavigationRequest):
                      Also contains an optional boolean value in case the URL needs to eb opened ina new tab
         - **@author** oldgod
     '''
-    # fixme: add documentation string for this function
     info("Navigating to the specified URL")
     if session_mgr.uuid != test_request.uuid:
         return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
@@ -383,7 +381,14 @@ async def post_navigate_to(request: Request, test_request: NavigationRequest):
                 ip=request.client[0] if request.client else "")
 
     debug(f"Navigating to : {test_request.url}")
-    session_mgr.driver.get(test_request.url)
+
+    # fixme: add the implementation for opening the URL in another tab if the flag value is True
+    if not test_request.open_in_new_tab:
+        session_mgr.driver.get(test_request.url)
+    else:
+        session_mgr.driver.execute_script("window.open('about:blank')")
+        session_mgr.driver.switch_to.window(session_mgr.driver.window_handles[-1])
+        session_mgr.driver.get(test_request.url)
 
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS,
             message=f"Navigation to URL : {test_request.url} successful", uuid=session_mgr.uuid, name=session_mgr.name, 
