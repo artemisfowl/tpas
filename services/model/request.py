@@ -59,3 +59,12 @@ class UiRequest(BaseModel):
     url: str = ""
     action: str = ""
     value: str = ""
+
+class ShellRequest(BaseModel):
+    # required values
+    uuid: str
+    command: str    # Note: this command should also contain the arguments to be passed to the actual command
+
+    # optional values
+    persistent: bool = False # Note: if this is enabled, every time the API is called, it will store the command and then perform all the
+    # command before sending out the last shell command output

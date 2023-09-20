@@ -32,6 +32,9 @@ class SessionManager:
         self.ui_element = None
         self.ui_elements = []
 
+        self.shell_cmd = str()
+        self.shell_cmds = []
+
     # fixme: add the right documentation strings for the properties
     @property
     def ui_element(self):
@@ -40,6 +43,23 @@ class SessionManager:
     @ui_element.setter
     def ui_element(self, value: Any):
         self._ui_element = value
+
+    @property
+    def shell_cmd(self):
+        return self._shell_cmd
+
+    @shell_cmd.setter
+    def shell_cmd(self, value: str):
+        self._shell_cmd = value
+
+    @property
+    def shell_cmds(self):
+        return self._shell_cmds
+
+    @shell_cmds.setter
+    def shell_cmds(self, value: list):
+        for cmd in value:
+            self._shell_cmds.append(cmd)
 
     @property
     def ui_elements(self):

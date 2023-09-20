@@ -15,7 +15,7 @@ from browsers import browsers
 from selenium.webdriver.common.by import By
 from .model import ResponseCode, SessionManager
 from .model import test_response
-from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest, UiRequest, NavigationRequest
+from .model import AdminRequest, InitTestRequest, EndTestRequest, FileUploadRequest, UiRequest, NavigationRequest, ShellRequest
 from .constants import DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_USER, DEFAULT_DRIVER_BINARY, EXIT_FAILURE
 from .constants import TestType
 from .utils import read_module_config, update_test_response, find_installed_browsers
@@ -141,7 +141,7 @@ async def post_clear_all_sessions(request: Request, test_request: AdminRequest):
                     uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
     else:
         warn("Admin user is not recognized, username/password might be incorrect")
-        update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
+        return update_test_response(test_response=test_response, code=ResponseCode.FAILURE, 
                 message="Admin username and password not matching",
                 uuid="", name=session_mgr.name, ip=request.client[0] if request.client else "")
 
@@ -435,5 +435,13 @@ async def post_perform_operation(request: Request, test_request: UiRequest):
                 ip=request.client[0] if request.client else "")
 
     return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS, 
-            message="Performed operation: {}", uuid=session_mgr.uuid, name=session_mgr.name, 
+            message=f"Performed operation : {test_request.action} on element of type : {test_request.locator} to be found by : {test_request.by}", 
+            uuid=session_mgr.uuid, name=session_mgr.name, 
+            ip=request.client[0] if request.client else "")
+
+@app.post("/shell/execute-cmd", tags=["shell"])
+async def post_execute_shell_command(request: Request, test_request: ShellRequest):
+    # fixme: add the code for handling the persistence and the test request appropriately
+    return update_test_response(test_response=test_response, code=ResponseCode.SUCCESS,
+            message="Executed Shell command : {}", uuid=session_mgr.uuid, name=session_mgr.name,
             ip=request.client[0] if request.client else "")
